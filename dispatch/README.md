@@ -4,7 +4,7 @@ An agent that reads HTTP 402 paywalls, decides what to buy under a spending mand
 AP4M channel, and proves it from the chain. One command, about a minute, nothing pre-recorded.
 
 ```bash
-npm install        # then copy @ap4m/sdk, @noble, @scure, @adraffy into node_modules (see ../ap4m-hackathon)
+npm install        # installs ethers and the AP4M SDK (@ap4m/sdk from hackathon.ap4m.build, Node 24)
 npm test           # policy, retry, and every scenario over 300 seeds. No network.
 npm run channels   # read-only: your channels, their status and cap left, and how many more channels the reservation can bind
 node dry.mjs 7     # for every scenario: starts the real sellers, reads the real 402s, shows each decision. Spends nothing.

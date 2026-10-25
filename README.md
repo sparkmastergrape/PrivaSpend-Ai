@@ -18,7 +18,7 @@ Submission text: [tripwire/SUBMISSION.md](tripwire/SUBMISSION.md). Numbers come 
 ## Run it (no keys, no payment)
 
 ```bash
-cd dispatch && npm install && npm test        # policy, retry, 6 scenarios x 300 seeds
+cd dispatch && npm install && npm test        # policy, retry, 6 scenarios x 300 seeds (npm install fetches the AP4M SDK from hackathon.ap4m.build)
 cd dispatch && npm run check-data             # every seller's real source, plus the scenarios' reasoning on it (needs internet)
 cd dispatch && npm run audit                  # re-reads all recorded purchases from the chain, rewrites AUDIT-MANIFEST.md
 cd tripwire && npm install && npm test        # 8 attack scenarios + voucher tests
