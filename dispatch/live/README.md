@@ -130,4 +130,5 @@ that is the only row in the tape marked *settled*. Two tracks, two tempos.
 | `pane.html` | the UI; talks only to the relay |
 | `trace.mjs` | how the agent and merchant narrate their own HTTP |
 | `demo-loop.mjs` | drives real purchases so the rows marked *ours* are ours |
+| `sim/` | a simulated node for rehearsing the pane offline; invented data, never evidence ([README](sim/README.md)) |
 | `tape.jsonl` | decoded rows as they were seen — a rehearsal aid, never an endpoint |

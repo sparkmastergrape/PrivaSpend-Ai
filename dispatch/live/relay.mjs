@@ -58,7 +58,8 @@ const RPC = (process.env.QUICKNODE_EVM_RPC_URL || process.env.AP4M_RPC_URL
 
 /** The provider's name, never its URL. This is the only thing the pane is told
  *  about where the data came from, and the only thing it needs. */
-const sourceName = (url) => (/quiknode/i.test(url) ? 'QuickNode'
+const SOURCE_NAME = (process.env.LIVE_SOURCE_NAME || '').trim();   // lets a simulated node say so (live/sim)
+const sourceName = (url) => SOURCE_NAME || (/quiknode/i.test(url) ? 'QuickNode'
   : /xrplevm\.org/i.test(url) ? 'public XRPL EVM node' : 'configured node');
 
 const LEDGER = (process.env.PAYMENT_LEDGER || '0xcAB42800A5ECF0D253Fa2581Bb3334B4DAEfaE91').trim();
@@ -120,7 +121,7 @@ let ws = null;
 let reconnectDelay = 1000;
 
 const rpc = new ethers.JsonRpcProvider(RPC);
-const TAPE_FILE = path.join(HERE, 'tape.jsonl');
+const TAPE_FILE = process.env.LIVE_TAPE_FILE || path.join(HERE, 'tape.jsonl');
 
 // ── Fan-out ──────────────────────────────────────────────────────────────────
 

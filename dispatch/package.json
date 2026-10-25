@@ -8,6 +8,7 @@
     "demo": "node demo.mjs",
     "pane": "node pane/pane.mjs",
     "live": "node live/relay.mjs",
+    "live:sim": "node live/sim/sim.mjs",
     "audit": "node audit-manifest.mjs --verify",
     "test": "node test.mjs",
     "check-data": "node check-data.mjs",
