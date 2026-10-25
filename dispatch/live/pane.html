@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Pay — live channel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --ground: #08090B;
+    --panel: #0E1013;
+    --panel-2: #121519;
+    --line: #1B2026;
+    --line-2: #161A1F;
+    --orange: #FF5A00;
+    --orange-dim: #2A1206;
+    --amber: #F5A623;
+    --green: #4FE39B;
+    --red: #E2574C;
+    --text: #ECEFF2;
+    --text-2: #B9C2CB;
+    --muted: #7F8A95;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--text);
+    font-family: Inter, system-ui, sans-serif; font-size: 14px;
+  }
+  a { color: var(--orange); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 24px 24px 64px; }
+
+  /* ── header ─────────────────────────────────────────────────────────── */
+  header { display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+  .kicker {
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--orange); font-weight: 600; margin-bottom: 6px;
+  }
+  .kicker::before {
+    content: ''; display: block; width: 46px; height: 3px;
+    background: var(--orange); margin-bottom: 8px;
+  }
+  h1 { margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .chip {
+    margin-left: auto; display: flex; align-items: center; gap: 10px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    padding: 9px 16px; font-family: var(--mono); font-size: 12px; white-space: nowrap;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .dot.live { background: var(--green); box-shadow: 0 0 0 0 rgba(79,227,155,0.7); animation: ping 2s infinite; }
+  .dot.poll { background: var(--amber); }
+  .dot.down { background: #E2574C; }
+  @keyframes ping {
+    0% { box-shadow: 0 0 0 0 rgba(79,227,155,0.6); }
+    70% { box-shadow: 0 0 0 7px rgba(79,227,155,0); }
+    100% { box-shadow: 0 0 0 0 rgba(79,227,155,0); }
+  }
+  .chip .sep { color: var(--line); }
+  .chip .val { color: var(--text-2); }
+
+  /* ── columns ────────────────────────────────────────────────────────── */
+  /* The two agents face each other; the round trip they share runs underneath. */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 26px; }
+  .cols .span { grid-column: 1 / -1; }
+  @media (max-width: 1000px) { .cols { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px;
+  }
+  .card h2 {
+    margin: 0 0 14px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--orange); font-weight: 600;
+  }
+  .addr { font-family: var(--mono); font-size: 12px; color: var(--text-2); word-break: break-all; }
+  .figure { font-family: var(--mono); font-size: 30px; font-weight: 500; margin: 14px 0 2px; }
+  .figure .unit { font-size: 14px; color: var(--muted); margin-left: 6px; }
+  .label { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+  .meter { height: 8px; border-radius: 4px; background: var(--panel-2); margin: 14px 0 8px; overflow: hidden; }
+  .meter > span {
+    display: block; height: 100%; width: 0; background: var(--orange); transition: width .5s ease;
+  }
+  .meter.near > span { background: var(--amber); }
+  .row { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; }
+  .row .v { font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+
+  /* ── x402 strip ─────────────────────────────────────────────────────── */
+  .hops { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .hop {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 9px;
+    padding: 14px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--panel-2); min-height: 108px;
+  }
+  @media (max-width: 900px) {
+    .hops { grid-template-columns: 1fr; }
+    .hop { flex-direction: row; align-items: center; gap: 10px; min-height: 0; padding: 10px 12px; }
+  }
+  .hop .n {
+    width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line);
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    display: flex; align-items: center; justify-content: center; flex: none;
+    transition: background .2s, border-color .2s, color .2s, box-shadow .2s;
+  }
+  .hop .t { font-size: 13px; color: var(--text-2); transition: color .2s; }
+  .hop .say { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  @media (max-width: 900px) { .hop .say { margin-left: auto; } }
+  /* Where the colour came from: the chain, or the process that was there. */
+  .hop .tag {
+    margin-top: auto; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); opacity: .75;
+  }
+  .hop .tag:empty { display: none; }
+  /* Green as a step completes, amber when it wants a look, red when it failed. */
+  .hop.ok .n { background: var(--green); border-color: var(--green); color: #06130D; font-weight: 700; }
+  .hop.ok .t { color: var(--text); }
+  .hop.warn .n { background: var(--amber); border-color: var(--amber); color: #1B1203; font-weight: 700; }
+  .hop.warn .t, .hop.warn .say { color: var(--amber); }
+  .hop.fail .n { background: var(--red); border-color: var(--red); color: #fff; font-weight: 700; }
+  .hop.fail .t, .hop.fail .say { color: var(--red); }
+  .hop.ok .n { box-shadow: 0 0 0 0 rgba(79,227,155,.6); animation: pop .5s ease-out; }
+  @keyframes pop {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(79,227,155,.7); }
+    55% { transform: scale(1.25); }
+    100% { transform: scale(1); box-shadow: 0 0 0 12px rgba(79,227,155,0); }
+  }
+  .legend {
+    display: flex; gap: 16px; margin-top: 14px; font-size: 11px; color: var(--muted);
+  }
+  .legend i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .note {
+    margin-top: 16px; padding: 12px; border-radius: 8px;
+    background: var(--orange-dim); border: 1px solid #3A1A08;
+    font-size: 12px; color: var(--text-2); line-height: 1.5;
+  }
+
+  /* ── tape ───────────────────────────────────────────────────────────── */
+  .tapehead { display: flex; align-items: center; gap: 14px; margin: 26px 0 10px; }
+  .tapehead h2 {
+    margin: 0; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--orange); font-weight: 600;
+  }
+  .toggle { margin-left: auto; display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .toggle button {
+    background: var(--panel); border: 0; color: var(--muted); font-family: var(--mono);
+    font-size: 11px; padding: 6px 14px; cursor: pointer;
+  }
+  .toggle button.on { background: var(--orange); color: #fff; }
+  table { border-collapse: collapse; width: 100%; }
+  th {
+    text-align: left; padding: 9px 12px; font-size: 10px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  td {
+    padding: 9px 12px; font-family: var(--mono); font-size: 12px;
+    border-bottom: 1px solid var(--line-2); white-space: nowrap; color: var(--text-2);
+  }
+  td.amt { text-align: right; color: var(--text); }
+  tr.mine td { background: rgba(255,90,0,0.06); }
+  tr.mine td.who { color: var(--orange); font-weight: 600; }
+  tr.settled td.ev { color: var(--green); }
+  tr.fresh { animation: slidein .6s ease-out; }
+  @keyframes slidein {
+    from { background: rgba(255,90,0,0.22); transform: translateY(-4px); }
+    to { background: transparent; transform: none; }
+  }
+  .ev { font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+  .empty { padding: 28px 12px; color: var(--muted); font-size: 13px; }
+  footer { margin-top: 26px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="kicker">Runtime payment flow</div>
+      <h1>Two agents, one funded channel</h1>
+      <div class="sub">A buyer agent signs vouchers; a seller merchant redeems them. Read from the chain, not from the agents.</div>
+    </div>
+    <div class="chip">
+      <span class="dot" id="dot"></span>
+      <span id="source">connecting</span>
+      <span class="sep">·</span><span class="val" id="transport">—</span>
+      <span class="sep">·</span><span class="val" id="head">head —</span>
+      <span class="sep">·</span><span class="val" id="age">—</span>
+    </div>
+  </header>
+
+  <div class="cols">
+    <section class="card">
+      <h2>Buyer agent</h2>
+      <div class="label">Signing wallet</div>
+      <div class="addr" id="buyer">—</div>
+      <div class="figure"><span id="spent">0.00</span><span class="unit">RLUSD authorized</span></div>
+      <div class="meter" id="meter"><span></span></div>
+      <div class="label"><span id="capline">against a funded cap</span></div>
+      <div class="row"><span class="label">Payments signed</span><span class="v" id="paycount">0</span></div>
+      <div class="row"><span class="label">Last voucher</span><span class="v" id="lastpay">—</span></div>
+    </section>
+
+    <section class="card">
+      <h2>Seller merchant</h2>
+      <div class="label">Payout wallet</div>
+      <div class="addr" id="seller">—</div>
+      <div class="figure"><span id="recv">0.00</span><span class="unit">RLUSD held</span></div>
+      <div class="row"><span class="label">Claims received</span><span class="v" id="claims">0</span></div>
+      <div class="row"><span class="label">Settled to payout</span><span class="v" id="settled">0.00 RLUSD</span></div>
+      <div class="row"><span class="label">Escrow vault</span><span class="v" id="vault">—</span></div>
+    </section>
+
+    <section class="card span">
+      <h2>x402 round trip</h2>
+      <div class="hops">
+        <div class="hop" id="hop1"><span class="n">1</span><span class="t">Agent requests the resource</span><span class="say"></span><span class="tag"></span></div>
+        <div class="hop" id="hop2"><span class="n">2</span><span class="t">HTTP 402 — payment requirements</span><span class="say"></span><span class="tag"></span></div>
+        <div class="hop" id="hop3"><span class="n">3</span><span class="t">PAYMENT-SIGNATURE + voucher</span><span class="say"></span><span class="tag"></span></div>
+        <div class="hop" id="hop4"><span class="n">4</span><span class="t">VoucherRedeemed on the PaymentLedger</span><span class="say"></span><span class="tag"></span></div>
+        <div class="hop" id="hop5"><span class="n">5</span><span class="t">Resource released</span><span class="say"></span><span class="tag"></span></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--green)"></i>passed</span>
+        <span><i style="background:var(--amber)"></i>needs a look</span>
+        <span><i style="background:var(--red)"></i>failed</span>
+      </div>
+      <div class="note">
+        Step 4 is <strong>measured</strong> — it is an event on the ledger. The rest is
+        HTTP between the two agents, which no node can see, so those steps are
+        <strong>reported</strong> by the processes that were there. And no RLUSD moves on
+        this path: the voucher advances the redeemed watermark, and the seller is paid
+        when the channel settles, which is the <strong>settled</strong> row in the tape below.
+      </div>
+    </section>
+  </div>
+
+  <div class="tapehead">
+    <h2>Ledger tape</h2>
+    <span class="label" id="scope"></span>
+    <div class="toggle">
+      <button id="btnMine" class="on">Ours</button>
+      <button id="btnAll">All traffic</button>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Time</th><th>Event</th><th>Buyer</th><th>Seller</th>
+          <th style="text-align:right">Amount</th><th style="text-align:right">Cumulative</th>
+          <th>Block</th><th>Tx</th><th>Via</th></tr>
+    </thead>
+    <tbody id="tape"><tr><td colspan="9" class="empty">Waiting for the first event…</td></tr></tbody>
+  </table>
+
+  <footer>
+    Every row is a decoded on-chain event — <span style="color:var(--text-2)">measured</span>, not reported by the agent.
+    The endpoint itself never reaches this page: the relay holds it and names only the provider.
+  </footer>
+</div>
+
+<script>
+const state = {
+  buyer: '', seller: '', cap: '5', explorer: '',
+  rows: [], filter: 'mine', lastPushAt: 0, transport: 'connecting', source: '', head: 0,
+  settledWei: 0n, hotStage: 4,
+};
+
+// 18 decimals, done with BigInt. Never write the zeros by hand.
+function rlusd(wei, places = 2) {
+  const value = BigInt(wei || 0);
+  const whole = value / 10n ** 18n;
+  const frac = (value % 10n ** 18n).toString().padStart(18, '0').slice(0, places);
+  return `${whole}.${frac}`;
+}
+const short = (hex) => (hex ? hex.slice(0, 6) + '…' + hex.slice(-4) : '—');
+// The cap is written in RLUSD in .env; take it to 18 decimals without typing zeros.
+const capWei = () => BigInt(Math.round(Number(state.cap || 0) * 1e6)) * 10n ** 12n;
+const clock = (unix) => new Date(unix * 1000).toLocaleTimeString([], { hour12: false });
+
+// ── x402 strip ───────────────────────────────────────────────────────────────
+// Green as a step passes, amber when it wants a look, red when it failed. Only
+// step 4 is evidenced on chain; the rest are what that one event implies, which
+// is why the note under the strip says so rather than the colours pretending.
+function hop(n, mark, say, evidence) {
+  const element = document.getElementById('hop' + n);
+  element.className = 'hop' + (mark ? ' ' + mark : '');
+  element.querySelector('.say').textContent = say || '';
+  element.querySelector('.tag').textContent = mark ? (evidence || '') : '';
+  idleClear();
+}
+const resetHops = () => [1, 2, 3, 4, 5].forEach((n) => {
+  const element = document.getElementById('hop' + n);
+  element.className = 'hop';
+  element.querySelector('.say').textContent = '';
+  element.querySelector('.tag').textContent = '';
+});
+
+// Leave the last result up long enough to read, then clear so the strip never
+// shows a stale round trip as if it were the current one.
+function idleClear() {
+  clearTimeout(idleClear.timer);
+  idleClear.timer = setTimeout(resetHops, 30_000);
+}
+
+/** Step 4 and only step 4. It is the one the chain evidences; painting the
+ *  others from a redemption event would be inventing an HTTP exchange nobody
+ *  on this side watched. Those arrive as traces from the agent and merchant. */
+function markRedemption(row) {
+  const cap = capWei();
+  const cumulative = BigInt(row.cumulative);
+  const overCap = cap > 0n && cumulative > cap;
+  const nearCap = cap > 0n && !overCap && cumulative * 100n > cap * 80n;
+  // A Streams delivery is a push like the socket's, by a different road, so it
+  // is green too. Only the reconcile poll means we learned late.
+  const pushed = row.via === 'push' || row.via === 'stream';
+  hop(4,
+    overCap ? 'fail' : pushed && !nearCap ? 'ok' : 'warn',
+    overCap ? 'cumulative is over the funded cap'
+      : nearCap ? rlusd(cumulative) + ' / ' + state.cap + ' RLUSD — near the cap'
+      : row.via === 'stream' ? 'block ' + row.block.toLocaleString() + ' — via Streams'
+      : pushed ? 'block ' + row.block.toLocaleString()
+      : 'seen by ' + row.via + ', not the socket',
+    'measured');
+}
+
+// ── chip ─────────────────────────────────────────────────────────────────────
+function paintChip() {
+  const dot = document.getElementById('dot');
+  const age = state.lastPushAt ? Date.now() - state.lastPushAt : null;
+  const live = state.transport === 'wss' && age !== null && age < 45_000;
+  dot.className = 'dot ' + (live ? 'live' : state.transport === 'polling' ? 'poll' : 'down');
+  document.getElementById('source').textContent = state.source || 'connecting';
+  document.getElementById('transport').textContent =
+    state.transport === 'wss' ? 'wss' : state.transport === 'polling' ? 'polling fallback' : '—';
+  document.getElementById('head').textContent = 'head ' + (state.head ? state.head.toLocaleString() : '—');
+  document.getElementById('age').textContent = age === null ? 'no push yet'
+    : age < 1000 ? 'pushed just now' : `pushed ${(age / 1000).toFixed(1)}s ago`;
+}
+setInterval(paintChip, 250);
+
+// ── tape ─────────────────────────────────────────────────────────────────────
+function render(freshKey) {
+  const body = document.getElementById('tape');
+  const mineOnly = state.filter === 'mine';
+  const rows = state.rows.filter((r) => (mineOnly ? r.mine : true)).slice(-60).reverse();
+  const mineCount = state.rows.filter((r) => r.mine).length;
+  document.getElementById('scope').textContent =
+    mineOnly && mineCount === 0
+      ? 'no payments on your channel yet — switch to All traffic to watch the network'
+      : `${mineCount} of ${state.rows.length} rows are yours`;
+
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="9" class="empty">Nothing on this filter yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map((r) => {
+    const key = r.txHash + ':' + (r.claimId || r.value);
+    const classes = [r.mine ? 'mine' : '', r.kind === 'transfer' ? 'settled' : '',
+      key === freshKey ? 'fresh' : ''].filter(Boolean).join(' ');
+    const event = r.kind === 'voucher' ? 'VoucherRedeemed'
+      : r.settlement ? 'Settled → payout' : 'RLUSD transfer';
+    const evidence = r.kind === 'voucher' ? 'measured' : r.settlement ? 'settled' : 'measured';
+    return `<tr class="${classes}">
+      <td>${clock(r.at)}</td>
+      <td class="ev">${event}</td>
+      <td class="who">${short(r.agent || r.from)}</td>
+      <td class="who">${short(r.payout || r.to)}</td>
+      <td class="amt">${rlusd(r.amount ?? r.value)}</td>
+      <td class="amt">${r.cumulative ? rlusd(r.cumulative) : '—'}</td>
+      <td>${r.block.toLocaleString()}</td>
+      <td><a href="${state.explorer}${r.txHash}" target="_blank" rel="noopener">${short(r.txHash)}</a></td>
+      <td class="ev">${r.via}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── dials ────────────────────────────────────────────────────────────────────
+function paintDials() {
+  const mine = state.rows.filter((r) => r.kind === 'voucher' && r.mine);
+  const last = mine[mine.length - 1];
+  const spent = last ? BigInt(last.cumulative) : 0n;
+  const cap = capWei();
+  document.getElementById('spent').textContent = rlusd(spent);
+  document.getElementById('paycount').textContent = mine.length;
+  document.getElementById('lastpay').textContent = last ? rlusd(last.amount) + ' RLUSD' : '—';
+  document.getElementById('capline').textContent = `against a ${state.cap} RLUSD funded cap`;
+  const pct = cap > 0n ? Number((spent * 1000n) / cap) / 10 : 0;
+  const meter = document.getElementById('meter');
+  meter.firstElementChild.style.width = Math.min(100, pct) + '%';
+  meter.className = 'meter' + (pct > 80 ? ' near' : '');
+  document.getElementById('claims').textContent =
+    state.rows.filter((r) => r.kind === 'voucher' && r.payout === state.seller).length;
+  document.getElementById('settled').textContent = rlusd(state.settledWei) + ' RLUSD';
+}
+
+// ── feed ─────────────────────────────────────────────────────────────────────
+const stream = new EventSource('/stream');
+
+stream.addEventListener('hello', (message) => {
+  const data = JSON.parse(message.data);
+  Object.assign(state, {
+    buyer: data.buyer, seller: data.seller, cap: data.cap, explorer: data.explorer,
+    transport: data.transport, source: data.source, head: data.head,
+    rows: data.tape || [],
+  });
+  if (data.lastPushAgoMs !== null) state.lastPushAt = Date.now() - data.lastPushAgoMs;
+  document.getElementById('buyer').textContent = data.buyer || 'not set in .env';
+  document.getElementById('seller').textContent = data.seller || 'not set in .env';
+  state.settledWei = state.rows.filter((r) => r.kind === 'transfer' && r.to === state.seller)
+    .reduce((total, r) => total + BigInt(r.value), 0n);
+  paintBalances(data.balances);
+  // A reconnect clears whatever the dropped stream left on the strip — including
+  // its own "relay is not answering" — and rebuilds it from what the relay kept.
+  resetHops();
+  for (const row of data.traces ?? []) hop(row.step, row.mark, row.say, row.evidence);
+  paintChip(); paintDials(); render();
+});
+
+stream.addEventListener('head', (message) => {
+  const data = JSON.parse(message.data);
+  state.head = data.head; state.transport = data.transport;
+  state.source = data.source; state.lastPushAt = Date.now();
+});
+
+stream.addEventListener('status', (message) => {
+  const data = JSON.parse(message.data);
+  const wasLive = state.transport === 'wss';
+  state.transport = data.transport; state.source = data.source; state.head = data.head;
+  if (data.lastPushAgoMs !== null) state.lastPushAt = Date.now() - data.lastPushAgoMs;
+  // Losing the socket is the attention case: rows still arrive, just late and by poll.
+  if (wasLive && data.transport === 'polling') hop(4, 'warn', 'socket down — rows arrive by poll');
+});
+
+stream.addEventListener('voucher', (message) => {
+  const row = JSON.parse(message.data);
+  state.rows.push(row);
+  if (row.via === 'push') state.lastPushAt = Date.now();
+  if (row.mine && row.via !== 'backfill') markRedemption(row);
+  paintDials();
+  render(row.txHash + ':' + row.claimId);
+});
+
+stream.addEventListener('transfer', (message) => {
+  const row = JSON.parse(message.data);
+  state.rows.push(row);
+  if (row.to === state.seller) state.settledWei += BigInt(row.value);
+  paintDials();
+  render(row.txHash + ':' + row.value);
+});
+
+function paintBalances(data) {
+  if (!data) return;
+  if (data.seller !== null) document.getElementById('recv').textContent = rlusd(data.seller);
+  if (data.vault !== null) document.getElementById('vault').textContent = rlusd(data.vault, 0) + ' RLUSD';
+}
+stream.addEventListener('balances', (message) => paintBalances(JSON.parse(message.data)));
+
+// The agent and merchant narrating their own HTTP. A fresh step 1 means a new
+// round trip is starting, so the rest of the strip is cleared rather than left
+// showing the previous one's result next to this one's.
+stream.addEventListener('trace', (message) => {
+  const row = JSON.parse(message.data);
+  if (row.step === 1 && row.mark) resetHops();
+  hop(row.step, row.mark, row.say, row.evidence);
+});
+
+stream.onerror = () => {
+  state.transport = 'down';
+  state.source = 'relay unreachable';
+  hop(4, 'fail', 'no feed — the relay is not answering');
+  paintChip();
+};
+
+document.getElementById('btnMine').onclick = () => {
+  state.filter = 'mine';
+  document.getElementById('btnMine').classList.add('on');
+  document.getElementById('btnAll').classList.remove('on');
+  render();
+};
+document.getElementById('btnAll').onclick = () => {
+  state.filter = 'all';
+  document.getElementById('btnAll').classList.add('on');
+  document.getElementById('btnMine').classList.remove('on');
+  render();
+};
+</script>
+</body>
+</html>

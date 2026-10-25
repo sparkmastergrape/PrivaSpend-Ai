@@ -11,7 +11,8 @@ const BASE_PORT = 8411;
  */
 export async function startMerchants(sellers, stateRoot, log = () => {}) {
   const context = await loadX402Context(process.env.AP4M_API_URL);
-  const rpcUrl = (await (await fetch(`${process.env.AP4M_API_URL}/public/config`)).json()).network.rpcUrl;
+  const rpcUrl = process.env.QUICKNODE_EVM_RPC_URL
+    || (await (await fetch(`${process.env.AP4M_API_URL}/public/config`)).json()).network.rpcUrl;
   const provider = new ethers.JsonRpcProvider(rpcUrl, 1449000);
   // The Merchant's own wallet sends the redemption and pays its gas. The agent only ever signs vouchers.
   const submitter = new ethers.Wallet(process.env.MERCHANT_SUBMITTER_KEY ?? process.env.MERCHANT_PRIVATE_KEY, provider);

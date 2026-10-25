@@ -7,3 +7,7 @@ live-*.json
 *.log
 agent-state/
 merchant-state/
+
+# Live pane run output: decoded chain events, but output rather than source.
+dispatch/live/tape.jsonl
+dispatch/.live-demo-state/

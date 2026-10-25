@@ -35,7 +35,7 @@ const manifestHash = crypto.createHash('sha256').update(listing).digest('hex');
 let verification = null;
 if (doVerify) {
   const cfg = await (await fetch(`${API}/public/config`, { signal: AbortSignal.timeout(20_000) })).json();
-  const provider = new ethers.JsonRpcProvider(cfg.network.rpcUrl, Number(cfg.network.chainId), { staticNetwork: true });
+  const provider = new ethers.JsonRpcProvider((process.env.QUICKNODE_EVM_RPC_URL || cfg.network.rpcUrl), Number(cfg.network.chainId), { staticNetwork: true });
   const ledger = cfg.contracts.paymentLedger.toLowerCase();
   verification = { at: new Date().toISOString(), byTx: new Map() };
   for (const { ev } of runs) {

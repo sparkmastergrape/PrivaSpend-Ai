@@ -11,7 +11,7 @@ if (!/^\d+(\.\d{1,6})?$/.test(cap) || Number(cap) <= 0 || Number(cap) > 5) throw
 
 const API = process.env.AP4M_API_URL;
 const cfg = await (await fetch(`${API}/public/config`)).json();
-const provider = new ethers.JsonRpcProvider(cfg.network.rpcUrl, 1449000, { staticNetwork: true });
+const provider = new ethers.JsonRpcProvider((process.env.QUICKNODE_EVM_RPC_URL || cfg.network.rpcUrl), 1449000, { staticNetwork: true });
 const wallet = new ethers.Wallet(process.env.AGENT_PRIVATE_KEY, provider);
 const gas = await provider.getBalance(wallet.address);
 console.log(`agent ${wallet.address}  gas ${ethers.formatEther(gas)} XRP  vault ${cfg.vaultBalance} RLUSD`);
