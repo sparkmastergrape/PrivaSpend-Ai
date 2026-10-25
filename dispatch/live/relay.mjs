@@ -265,7 +265,13 @@ async function connect() {
   if (!WSS) { transport = 'polling'; return; }
   try {
     ws = new ethers.WebSocketProvider(WSS);
-    await ws.getNetwork();                       // fails fast on a bad endpoint
+    // A refused handshake (429, 503, a dead host) arrives as an 'error' event on the
+    // socket. Unhandled, it ends the process. Unanswered, getNetwork() waits forever.
+    // Either way the reconcile poll never gets its turn, so turn it into a rejection.
+    const refused = new Promise((_, reject) => {
+      ws.websocket.onerror = (event) => reject(new Error(event?.message || 'socket error'));
+    });
+    await Promise.race([ws.getNetwork(), refused]);   // fails fast on a bad endpoint
     const subscribedAt = await ws.getBlockNumber();
     transport = 'wss';
     lastPushAt = Date.now();
