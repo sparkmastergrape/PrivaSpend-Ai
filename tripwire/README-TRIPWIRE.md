@@ -33,13 +33,11 @@ While LLMs are inherently susceptible to prompt injection and adversarial manipu
 npm install
 ```
 
-### 2. Configure Environment Variables
-Set your live AP4M hackathon credentials:
+### 2. Environment (optional)
+No key is needed. The scenarios sign with public throwaway test keys. Live mode (`LIVE=1 npm start`) only reads a channel's state from the public API:
 ```bash
-export AP4M_API_URL="https://hackathon.ap4m.build"
-export AGENT_PRIVATE_KEY="0xYourAgentPrivateKey"
-export TEAM_NAME="YourTeamName"
-export CHANNEL_ID="0x6d824358aa10ae33fb4ccf7deaab5e54147d4682963faeb4334518f2e26f320b"
+export AP4M_API_URL="https://hackathon.ap4m.build"   # default
+export CHANNEL_ID="0x..."                           # default: a recorded channel
 ```
 
 ### 3. Run the TRIPWIRE Attack Engine
