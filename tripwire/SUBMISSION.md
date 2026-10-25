@@ -1,16 +1,16 @@
-# TRIPWIRE + Dispatch: submission text
+# PrivaSpend: submission text
 
 Limits from the form: short description 200, description 5000, technical description 1000.
 Figures below come from dispatch/AUDIT-MANIFEST.md (15 recorded live runs, regenerated 2026-10-25). Regenerate it and update the numbers if you run more. The 15 runs were recorded before the sellers were switched to real data (see the scope paragraph); a new paid run is needed before claiming a purchase of real data in the five changed scenarios.
 
 ## Project Name
-TRIPWIRE + Dispatch
+PrivaSpend
 
 ## Short Description
 An agent buys data over HTTP 402, pays RLUSD under a spending mandate, refuses overpriced sellers, and proves each payment on-chain. A live attack board shows the guards stopping a fooled agent.
 
 ## Description
-Mastercard's stated hard problem is that payments are not the hard part; authority is. An agent that reads merchant text can be talked into a bad payment. This project has two parts: Dispatch, an agent that spends real RLUSD under a mandate, and TRIPWIRE, a board that tests what happens when the agent has been fooled.
+PrivaSpend lets an agent spend within hard limits and proves, from the chain, what it spent. Mastercard's stated hard problem is that payments are not the hard part; authority is. An agent that reads merchant text can be talked into a bad payment. This project has two parts: Dispatch, an agent that spends real RLUSD under a mandate, and TRIPWIRE, a board that tests what happens when the agent has been fooled.
 
 DISPATCH is an agent that buys data from sellers over HTTP 402. It reads the 402 challenge, decodes the price and payee, and decides whether to pay. The mandate is a per-call ceiling, a mission budget, a price that may not exceed the seller's listing by more than 25%, a fixed payee, a fixed asset, and the cap left on the AP4M channel. If every check passes it signs a voucher locally and pays in RLUSD. If one fails it refuses, signs nothing, and moves no money. There is no human step. A merchant's prose is never read, only amount, payee, asset and ledger state.
 

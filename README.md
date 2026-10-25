@@ -1,6 +1,8 @@
 <p align="center"><img src="tripwire/logo.svg" alt="TRIPWIRE" width="120"></p>
 
-# TRIPWIRE + Dispatch
+# PrivaSpend
+
+**Spend limits, threat protection and on-chain proof for AI agents.** Built from two parts: TRIPWIRE (the attack board) and Dispatch (the paying agent).
 
 Mastercard / XRPL hackathon entry on AP4M (Agent Pay for Machines) and x402, settled in RLUSD on XRPL EVM Testnet.
 
