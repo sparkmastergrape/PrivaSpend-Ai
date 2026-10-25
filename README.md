@@ -1,6 +1,6 @@
 <p align="center"><img src="tripwire/logo.svg" alt="TRIPWIRE" width="120"></p>
 
-# PrivaSpend
+# PrivaSpend AI
 
 **Spend limits, threat protection and on-chain proof for AI agents.** Built from two parts: TRIPWIRE (the attack board) and Dispatch (the paying agent).
 
