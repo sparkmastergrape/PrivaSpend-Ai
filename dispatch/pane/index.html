@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispatch Desk</title>
+<style>
+  :root {
+    --ground: #070A09; --panel: #0C110F; --line: #18211D; --line-2: #141D19; --edge: #22302A;
+    --green: #4FE39B; --green-dim: #0D1812; --amber: #F2B84B; --red: #F0707A;
+    --text: #E7EFEA; --text-2: #BCC9C2; --muted: #8CA096; --faint: #7B8F85;
+    --mono: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--text); font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; }
+  a { color: var(--green); } a:hover { color: #8BF0C0; }
+  table { border-collapse: collapse; width: 100%; min-width: 860px; }
+  th { text-align: left; padding: 11px 14px; font-size: 11px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 11px 14px; font-family: var(--mono); font-size: 12px; border-bottom: 1px solid var(--line-2); white-space: nowrap; color: var(--muted); }
+  td.actor { font-size: 13px; font-weight: 700; color: var(--text-2); }
+  td.amount { text-align: right; color: var(--text); }
+  td.outcome { color: var(--text-2); }
+  tr.refused { background: var(--green-dim); }
+  tr.refused td.outcome, tr.refused td.actor { color: var(--green); }
+  .ok { color: var(--green); } .bad { color: var(--red); } .warn { color: var(--amber); }
+  .shell { display: flex; flex-wrap: wrap; align-items: flex-start; min-height: 100vh; }
+  nav { flex: 1 1 230px; min-width: 200px; max-width: 270px; padding: 28px 18px 40px 24px; border-right: 1px solid var(--line); }
+  main { flex: 999 1 620px; min-width: 0; padding: 28px 28px 56px; }
+  aside { flex: 1 1 320px; min-width: 280px; max-width: 400px; padding: 28px 24px 40px; border-left: 1px solid var(--line); }
+  .kicker { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 9px 10px; border-radius: 4px; color: var(--text-2); text-decoration: none; font-size: 14px; }
+  .row .n { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .run { display: block; padding: 9px 10px; border-radius: 4px; color: var(--text-2); text-decoration: none; font-size: 13px; line-height: 1.4; }
+  .run.on { background: #101915; color: var(--text); }
+  .run small { display: block; font-family: var(--mono); font-size: 11px; color: var(--faint); }
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .tile { padding: 16px 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+  .tile .label { font-size: 12px; line-height: 1.45; color: var(--muted); min-height: 34px; }
+  .tile .big { font-family: var(--mono); font-size: 30px; font-weight: 500; margin-top: 6px; }
+  .tile .sub { font-size: 12px; color: var(--faint); margin-top: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--edge); border-radius: 8px; padding: 22px 22px 26px; margin-bottom: 20px; }
+  dl { margin: 0; } dl > div { padding: 11px 0; border-bottom: 1px solid var(--line); } dl > div:last-child { border-bottom: 0; }
+  dt { font-size: 12px; color: var(--muted); } dd { margin: 5px 0 0; font-family: var(--mono); font-size: 13px; word-break: break-all; }
+  .bar-track { height: 7px; border-radius: 2px; background: var(--line-2); } .bar-fill { height: 7px; border-radius: 2px; background: var(--green); }
+  .scroller { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+  .note { font-size: 12px; line-height: 1.7; color: var(--faint); }
+  .claim { padding: 14px 15px; background: #0C1611; border: 1px solid var(--edge); border-radius: 6px; margin-bottom: 12px; }
+  .claim b { display: block; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+  button { font: inherit; font-size: 13px; color: #04120B; background: var(--green); border: 0; border-radius: 5px; padding: 9px 14px; cursor: pointer; font-weight: 600; }
+  button:disabled { opacity: .5; cursor: wait; }
+  code { font-family: var(--mono); font-size: 12px; color: var(--text-2); }
+  @media (max-width: 900px) { nav, aside { max-width: none; border: 0; } .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+</head>
+<body>
+<div class="shell" id="shell">
+  <nav aria-label="Runs">
+    <div class="kicker" style="margin-bottom:14px">The Desk</div>
+    <a class="run" href="/wallets" style="margin-bottom:10px">Live wallets (watch both balances)</a>
+    <div id="rail"></div>
+    <div class="kicker" style="margin:24px 0 8px;padding-top:18px;border-top:1px solid var(--line)">Runs</div>
+    <div id="runs"></div>
+  </nav>
+
+  <main>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;margin-bottom:22px">
+      <h1 style="margin:0;font-size:28px;font-weight:600;letter-spacing:-.01em">Dispatch Desk</h1>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--muted)" id="asof">loading…</div>
+    </div>
+    <div class="tiles" id="tiles"></div>
+
+    <section class="card" id="card">
+      <div style="display:flex;gap:13px;align-items:flex-start;margin-bottom:20px">
+        <span style="font-family:var(--mono);font-size:12px;font-weight:700;color:#04120B;background:var(--green);border-radius:4px;padding:5px 7px">402</span>
+        <span>
+          <span style="display:block;font-size:19px;font-weight:600">Where it paid</span>
+          <span style="display:block;font-size:12px;color:var(--muted);margin-top:3px" id="payee-sub">—</span>
+        </span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:34px">
+        <dl style="flex:1 1 250px;min-width:0" id="facts"></dl>
+        <div style="flex:1 1 300px;min-width:0">
+          <div id="bars"></div>
+          <p class="note" style="margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line)" id="bars-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;margin:28px 0 10px" id="decisions">
+      <h2 style="margin:0;font-size:19px;font-weight:600">Every decision, in order</h2>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--muted)" id="dec-sub"></span>
+    </div>
+    <div class="scroller">
+      <table>
+        <thead><tr><th>Time</th><th>Step</th><th>Actor</th><th>Outcome</th><th style="text-align:right">Amount</th><th>Evidence</th><th>Transaction</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="note" id="foot" style="margin-top:14px"></p>
+  </main>
+
+  <aside>
+    <div class="kicker" style="margin-bottom:14px">Judging questions, this run</div>
+    <div id="criteria"></div>
+    <div style="margin-top:22px">
+      <button id="verify">Re-verify on chain</button>
+      <p class="note" style="margin:10px 0 0" id="verify-note">Re-reads each purchase's receipt and its VoucherRedeemed event from the chain now, without using the saved file's own proof fields.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+const EXPLORER = 'https://explorer.testnet.xrplevm.org/tx/';
+const $ = (id) => document.getElementById(id);
+function h(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v === false || v == null) continue;
+    if (k === 'class') e.className = v; else if (k === 'style') e.style.cssText = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v);
+  }
+  for (const k of kids.flat()) { if (k == null || k === false) continue; e.append(k.nodeType ? k : document.createTextNode(String(k))); }
+  return e;
+}
+const short = (x) => (x ? x.slice(0, 8) + '…' + x.slice(-4) : '—');
+const hhmmss = (iso) => (iso ? iso.slice(11, 19) + 'Z' : '—');
+const micro = (s) => Math.round(Number(s) * 1e6);
+const rl = (m) => (m / 1e6).toFixed(m % 10000 === 0 ? 2 : 6).replace(/0+$/, '').replace(/\.$/, '');
+
+let runs = [], selected = null;
+const verified = {};   // runId -> /api/verify result
+
+function link(tx) { return tx ? h('a', { href: EXPLORER + tx, target: '_blank', rel: 'noopener' }, short(tx)) : '—'; }
+
+function derive(ev) {
+  const purchases = ev.purchases || [];
+  const spent = purchases.reduce((a, p) => a + micro(p.priceRlusd), 0);
+  const policyRefusals = [...new Map((ev.refusals || []).filter((r) => r.guard !== 'Unavailable').map((r) => [r.seller + r.guard, r])).values()];
+  const unavailable = (ev.refusals || []).filter((r) => r.guard === 'Unavailable').length;
+  const peeks = (ev.timeline || []).filter((t) => t.kind === 'peek').length;
+  const v = verified[ev.runId];
+  const vFor = (tx) => v && v.purchases.find((p) => p.tx === tx);
+  const vOk = (p) => p && p.found && p.status === 1 && p.eventFound && p.claimMatches;
+  const recordedOk = purchases.filter((p) => p.status === 1 && p.eventMatchesClaim).length;
+  return { purchases, spent, policyRefusals, unavailable, peeks, v, vFor, vOk, recordedOk };
+}
+
+function rowsFor(ev, d) {
+  const out = [];
+  const chain = (tx) => {
+    const p = d.vFor(tx);
+    if (!p) return h('span', null, 'chain · recorded');
+    return d.vOk(p) ? h('span', { class: 'ok' }, 'chain · re-verified ✓') : h('span', { class: 'bad' }, 'chain · MISMATCH');
+  };
+  if (ev.timeline && ev.timeline.length) {
+    for (const t of ev.timeline) {
+      const seller = t.seller;
+      if (t.kind === 'peek') out.push({ time: t.at, step: 'peek', actor: 'agent', outcome: `${seller}: ${t.wouldPay ? 'would pay' : `would refuse [${t.guard}]`}`, amount: t.askedRlusd, evidence: 'agent-reported', refused: !t.wouldPay });
+      else if (t.kind === 'unavailable') out.push({ time: t.at, step: t.stage || 'probe', actor: 'agent', outcome: `${seller}: unavailable (${t.reason})`, evidence: 'agent-reported' });
+      else if (t.kind === 'refuse') out.push({ time: t.at, step: 'decide', actor: 'agent', outcome: `${seller}: refused [${t.guard}]`, amount: t.askedRlusd, evidence: 'agent-reported', refused: true });
+      else if (t.kind === 'pay') out.push({ time: t.at, step: 'pay', actor: 'agent', outcome: `${seller}: paid`, amount: t.priceRlusd, evidence: chain(t.tx), tx: t.tx });
+      else if (t.kind === 'settle') out.push({ time: t.at, step: 'settle', actor: 'ledger', outcome: `${seller}: settled to payout${t.via ? ' (seen in payout balance)' : ''}`, evidence: 'chain · recorded', tx: t.payoutTx });
+      else if (t.kind === 'payout-check') out.push({ time: t.at, step: 'check', actor: 'ledger', outcome: t.matches ? 'payout balance rose by exactly the spend' : 'payout rise differs from the spend', amount: t.spentRlusd, evidence: 'chain · recorded', bad: !t.matches });
+    }
+  } else {
+    for (const p of d.purchases) out.push({ time: null, step: 'pay', actor: 'agent', outcome: `${p.seller}: paid`, amount: p.priceRlusd, evidence: chain(p.tx), tx: p.tx });
+    for (const r of ev.refusals || []) out.push({ time: null, step: 'decide', actor: 'agent', outcome: `${r.seller}: ${r.guard === 'Unavailable' ? 'unavailable' : `refused [${r.guard}]`}`, amount: r.askedRlusd, evidence: 'agent-reported', refused: r.guard !== 'Unavailable' });
+  }
+  return out;
+}
+
+function render() {
+  const ev = runs.find((r) => r.runId === selected);
+  // runs list
+  const runsEl = $('runs'); runsEl.replaceChildren();
+  for (const r of runs) {
+    runsEl.append(h('a', { class: 'run' + (r.runId === selected ? ' on' : ''), href: '#' + r.runId },
+      r.scenario || 'visibility-audit (v1)', h('small', null, `${r.startedAt.slice(5, 16).replace('T', ' ')}Z · ${r.scenario ? 'seed ' + r.seed : 'before scenarios'}`)));
+  }
+  if (!ev) {
+    $('asof').textContent = 'no runs yet';
+    $('tiles').replaceChildren(h('div', { class: 'note' }, 'No evidence files found. Run ', h('code', null, 'node demo.mjs'), ' in the dispatch folder, then reload.'));
+    return;
+  }
+  const d = derive(ev);
+  $('asof').textContent = `run ${ev.runId} · ${ev.startedAt.slice(0, 19)}Z · XRPL EVM Testnet`;
+
+  // rail
+  $('rail').replaceChildren(
+    ...[['Purchases', d.purchases.length], ['Refusals', d.policyRefusals.length], ['Peeks', d.peeks], ['Unavailable', d.unavailable], ['Channel', short(ev.channelId)]]
+      .map(([k, n]) => h('div', { class: 'row' }, h('span', null, k), h('span', { class: 'n' }, n))));
+
+  // tiles
+  const budget = ev.mandate ? ev.mandate.missionBudget : null;
+  const largest = d.purchases.reduce((m, p) => Math.max(m, micro(p.priceRlusd)), 0);
+  const paid = ev.payoutAfter !== undefined && ev.payoutBefore !== undefined ? BigInt(ev.payoutAfter) - BigInt(ev.payoutBefore) : null;
+  const tile = (label, big, sub, cls) => h('div', { class: 'tile' }, h('div', { class: 'label' }, label), h('div', { class: 'big ' + (cls || '') }, big), h('div', { class: 'sub' }, sub));
+  $('tiles').replaceChildren(
+    tile('Spent by the agent', rl(d.spent), budget ? `RLUSD of ${budget} mission budget` : 'RLUSD'),
+    tile('Refusals, by the agent', d.policyRefusals.length, 'agent-reported · no ledger trace', 'ok'),
+    tile('Largest single payment', largest ? rl(largest) : '—', 'RLUSD'),
+    ev.payoutDeltaMatchesSpend === undefined
+      ? tile('Payout check', '—', 'nothing was bought')
+      : tile('Payout check', ev.payoutDeltaMatchesSpend ? '✓ exact' : '✗ differs', paid !== null ? `merchant payout +${rl(micro(Number(paid) / 1e18))} RLUSD` : '', ev.payoutDeltaMatchesSpend ? 'ok' : 'bad'));
+
+  // card
+  $('payee-sub').textContent = `${d.purchases.length} purchase${d.purchases.length === 1 ? '' : 's'} from ${new Set(d.purchases.map((p) => p.seller)).size} seller${d.purchases.length === 1 ? '' : 's'}, one merchant payout wallet`;
+  const replay = ev.scenario ? `node demo.mjs --scenario ${ev.scenario} --seed ${ev.seed}` : 'predates scenarios';
+  const facts = [['Scenario', ev.scenario ? `${ev.scenario} (seed ${ev.seed})` : 'visibility-audit (first version)'], ['Task', ev.title || '—'],
+    ['Channel', ev.channelId], ['Merchant payout', ev.payout], ['Elapsed', ev.elapsedSeconds !== undefined ? `${ev.elapsedSeconds}s` : '—'], ['Replay', replay]];
+  $('facts').replaceChildren(...facts.map(([k, v]) => h('div', null, h('dt', null, k), h('dd', null, v))));
+  const bars = $('bars'); bars.replaceChildren();
+  if (!d.purchases.length) bars.append(h('div', { class: 'note' }, 'Nothing was bought. That is the correct outcome when nothing met the policy.'));
+  const max = Math.max(1, ...d.purchases.map((p) => micro(p.priceRlusd)));
+  for (const p of d.purchases) {
+    bars.append(h('div', { style: 'margin-bottom:14px' },
+      h('div', { style: 'display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;margin-bottom:6px' }, h('span', null, p.seller), h('span', null, `${p.priceRlusd} RLUSD`)),
+      h('div', { class: 'bar-track' }, h('div', { class: 'bar-fill', style: `width:${(micro(p.priceRlusd) / max) * 100}%` }))));
+  }
+  $('bars-note').replaceChildren('Purchases and settlement are on-chain and can be re-read with the button at right. Refusals and peeks leave no trace on any ledger, so they are labelled agent-reported.');
+
+  // table
+  const rows = rowsFor(ev, d);
+  const tb = $('rows'); tb.replaceChildren();
+  for (const r of rows) {
+    tb.append(h('tr', { class: r.refused ? 'refused' : '' },
+      h('td', { class: 'time' }, hhmmss(r.time)), h('td', null, r.step), h('td', { class: 'actor' }, r.actor),
+      h('td', { class: 'outcome' + (r.bad ? ' bad' : '') }, r.outcome), h('td', { class: 'amount' }, r.amount ? `${r.amount} RLUSD` : '—'),
+      h('td', null, r.evidence), h('td', null, link(r.tx))));
+  }
+  $('dec-sub').textContent = `${rows.length} events${ev.timeline ? '' : ' · run predates timeline recording, order unknown'}`;
+  const liveData = ev.dataSource === 'live' || (ev.dataSource === undefined && ev.scenario === 'live-weather');
+  $('foot').textContent = ev.scenario ? 'Sellers share the team\'s one on-chain merchant identity and payout wallet. ' + (liveData ? 'Data sold was fetched live from a public source when the sellers started.' : 'Data sold in this run was sample fixture data (recorded before sellers fetched real data).') + ' Decisions are plain code over integers, not an LLM.' : 'This run was recorded before scenarios and the timeline existed, so rows have no timestamps.';
+
+  // criteria
+  const crit = (q, state, text, cls) => h('div', { class: 'claim' }, h('b', null, q), h('div', { class: cls || '' }, state), h('div', { class: 'note', style: 'margin-top:4px' }, text));
+  const n = d.purchases.length;
+  const onchain = d.v ? `${d.purchases.filter((p) => d.vOk(d.vFor(p.tx))).length}/${n} re-verified from the chain just now` : `${d.recordedOk}/${n} recorded as matching when the run executed; press Re-verify to check now`;
+  const demoOk = ev.elapsedSeconds !== undefined && ev.elapsedSeconds <= 180;
+  $('criteria').replaceChildren(
+    crit('Autonomy', n ? 'Paid with no human step' : 'Correctly bought nothing', 'The agent read each 402 and decided by policy. Agent-reported; the payments themselves are on-chain.', n ? 'ok' : ''),
+    crit('Use case clarity', 'Judgement, not measured', (liveData ? 'The report cannot be written without buying, and the data is real: fetched live from a public source when the sellers started.' : 'The report cannot be written without buying, but this run bought sample fixture data (it predates real-data sellers).'), 'warn'),
+    crit('On-chain proof', n ? (d.v ? (d.purchases.every((p) => d.vOk(d.vFor(p.tx))) ? '✓ ' : '✗ ') + onchain : onchain) : 'No purchases to prove', 'VoucherRedeemed event found and its claim id matches the agent\'s.', d.v ? (d.purchases.every((p) => d.vOk(d.vFor(p.tx))) ? 'ok' : 'bad') : ''),
+    crit('RLUSD settlement', ev.payoutDeltaMatchesSpend === undefined ? 'Nothing to settle' : ev.payoutDeltaMatchesSpend ? '✓ payout rose by exactly the spend' : '✗ payout differs from spend', d.v ? `This run's payout check is above. The wallet's balance read just now is ${d.v.payoutBalanceNowRlusd} RLUSD, which also includes any payments since.` : 'Merchant payout balance read before and after the run.', ev.payoutDeltaMatchesSpend === false ? 'bad' : 'ok'),
+    crit('Demo quality', ev.elapsedSeconds !== undefined ? `${ev.elapsedSeconds}s end to end` : '—', demoOk ? 'Inside the 3-minute limit, live, one command.' : 'Check the run time against the 3-minute limit.', demoOk ? 'ok' : 'warn'),
+    crit('Creativity', ev.scenario || 'first version', 'Data-dependent buying and refused price bumps. ' + (liveData ? 'Real public data sources (Open-Meteo, FRED, NWS, robots.txt).' : 'This run used fixture data.') + ' Not met: an LLM doing the reasoning.', 'warn'));
+  $('verify').disabled = !n;
+  $('verify').textContent = d.v ? 'Re-verify again' : 'Re-verify on chain';
+  $('verify-note').textContent = d.v ? `Checked ${d.v.checkedAt.slice(11, 19)}Z. Receipts and events were read fresh from the RPC node.` : 'Re-reads each purchase\'s receipt and its VoucherRedeemed event from the chain now, without using the saved file\'s own proof fields.';
+}
+
+function pick() {
+  const id = location.hash.slice(1);
+  selected = runs.some((r) => r.runId === id) ? id : (runs[0] && runs[0].runId);
+  render();
+}
+async function load() {
+  try { runs = (await (await fetch('/api/runs')).json()).runs; } catch { runs = []; }
+  pick();
+}
+$('verify').addEventListener('click', async () => {
+  const id = selected; const btn = $('verify'); btn.disabled = true; btn.textContent = 'Reading chain…';
+  try {
+    const r = await fetch('/api/verify?run=' + encodeURIComponent(id));
+    const body = await r.json();
+    if (!r.ok) throw new Error(body.error || r.status);
+    verified[id] = body;
+  } catch (e) { $('verify-note').textContent = 'Verification failed: ' + e.message; }
+  render();
+});
+window.addEventListener('hashchange', pick);
+load();
+</script>
+</body>
+</html>

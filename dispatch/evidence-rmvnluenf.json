@@ -1,0 +1,89 @@
+{
+  "runId": "rmvnluenf",
+  "scenario": "failover",
+  "title": "Failover (the preferred seller is offline; one backup lies about its price)",
+  "mandate": {
+    "perCallCeiling": "0.05",
+    "missionBudget": "0.05",
+    "priceTolerancePct": 25
+  },
+  "seed": 7,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "backup-leads-2",
+      "priceRlusd": "0.03",
+      "tx": "0x386263a5d5c8301b056b0d261754c2aba0ffbc94c56d9d8fe6c38ab014408c86",
+      "claimId": "0xae1fde16fab1da915662a8a8c1a0621d4afebf71eddcc28626187180bb2a7229",
+      "redeemedBefore": "554256000000000000",
+      "redeemedAfter": "584256000000000000",
+      "block": 9231596,
+      "status": 1,
+      "eventClaimId": "0xae1fde16fab1da915662a8a8c1a0621d4afebf71eddcc28626187180bb2a7229",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.03"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "primary-leads",
+      "guard": "Unavailable",
+      "reason": "offline"
+    },
+    {
+      "seller": "backup-leads-1",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.05 RLUSD but was listed at 0.03 (tolerance 25%)",
+      "askedRlusd": "0.05"
+    }
+  ],
+  "timeline": [
+    {
+      "at": "2026-10-25T09:07:58.012Z",
+      "kind": "unavailable",
+      "seller": "primary-leads",
+      "stage": "buy",
+      "reason": "offline"
+    },
+    {
+      "at": "2026-10-25T09:07:58.534Z",
+      "kind": "refuse",
+      "seller": "backup-leads-1",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.05 RLUSD but was listed at 0.03 (tolerance 25%)",
+      "askedRlusd": "0.05",
+      "listedRlusd": "0.03"
+    },
+    {
+      "at": "2026-10-25T09:08:06.915Z",
+      "kind": "pay",
+      "seller": "backup-leads-2",
+      "priceRlusd": "0.03",
+      "tx": "0x386263a5d5c8301b056b0d261754c2aba0ffbc94c56d9d8fe6c38ab014408c86",
+      "claimId": "0xae1fde16fab1da915662a8a8c1a0621d4afebf71eddcc28626187180bb2a7229"
+    },
+    {
+      "at": "2026-10-25T09:08:19.184Z",
+      "kind": "settle",
+      "seller": "backup-leads-2",
+      "via": "payout balance"
+    },
+    {
+      "at": "2026-10-25T09:08:19.184Z",
+      "kind": "payout-check",
+      "beforeRlusd": "11.559938",
+      "afterRlusd": "11.589938",
+      "spentRlusd": "0.03",
+      "matches": true
+    }
+  ],
+  "channelId": "0xba86e45959af3fb932f551c62f43542b3fd80a2f99d45ceca4386920d0363dd0",
+  "payoutBefore": "11559938000000000000",
+  "redeemedStart": "554256000000000000",
+  "settlementMode": "automatic",
+  "payoutAfter": "11589938000000000000",
+  "spent": "30000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 24
+}

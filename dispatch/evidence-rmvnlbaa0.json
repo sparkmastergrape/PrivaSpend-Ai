@@ -1,0 +1,110 @@
+{
+  "runId": "rmvnlbaa0",
+  "scenario": "budget-squeeze",
+  "title": "Budget squeeze (wants three datasets, mission budget covers two)",
+  "mandate": {
+    "perCallCeiling": "0.05",
+    "missionBudget": "0.05",
+    "priceTolerancePct": 25
+  },
+  "seed": 1257964041,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "demand-data",
+      "priceRlusd": "0.02",
+      "tx": "0xf1bd150cd997c0a2ad2ead6187c1312605a67745c19ef02c940c8540ef4736b8",
+      "claimId": "0xf66b21a9881047014e7bfa77a2f845249b06e4eb3813afc4dcea3cfe3fdb870a",
+      "redeemedBefore": "304744000000000000",
+      "redeemedAfter": "324744000000000000",
+      "settlementTx": "0x56ae33c25e6845fcef05d903d86cf777f78bd783cf4db3ca6421f3e8f63d9094",
+      "payoutTx": "0xd7bc2e80377b7aff760d3bfa16ec0bd124d11977407353aad347f610441f3efa",
+      "block": 9231442,
+      "status": 1,
+      "eventClaimId": "0xf66b21a9881047014e7bfa77a2f845249b06e4eb3813afc4dcea3cfe3fdb870a",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    },
+    {
+      "seller": "pricing-data",
+      "priceRlusd": "0.02",
+      "tx": "0x0780a516a825e5587dbc13bfba8695bb1cf6d64ce93ff3c4dbeeef5d8c0af130",
+      "claimId": "0x4845b291873699d2f603d378ef0573ec3d3069636ab71bf2c7c05bfc1473d763",
+      "redeemedBefore": "324744000000000000",
+      "redeemedAfter": "344744000000000000",
+      "settlementTx": "0x25683dcaa1406056f4405582f0b6ca8b8f9019a958e09a777676bf298c1725bb",
+      "payoutTx": "0xc57e6894c47a1323c4e6d49e8255837e98d4bacc9a53c42a4bc084ce16b02378",
+      "block": 9231447,
+      "status": 1,
+      "eventClaimId": "0x4845b291873699d2f603d378ef0573ec3d3069636ab71bf2c7c05bfc1473d763",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "competition-data",
+      "guard": "MissionBudgetGuard",
+      "reason": "0.04 spent + 0.02 exceeds mission budget 0.05",
+      "askedRlusd": "0.02"
+    }
+  ],
+  "timeline": [
+    {
+      "at": "2026-10-25T08:53:12.713Z",
+      "kind": "pay",
+      "seller": "demand-data",
+      "priceRlusd": "0.02",
+      "tx": "0xf1bd150cd997c0a2ad2ead6187c1312605a67745c19ef02c940c8540ef4736b8",
+      "claimId": "0xf66b21a9881047014e7bfa77a2f845249b06e4eb3813afc4dcea3cfe3fdb870a"
+    },
+    {
+      "at": "2026-10-25T08:53:35.214Z",
+      "kind": "settle",
+      "seller": "demand-data",
+      "settlementTx": "0x56ae33c25e6845fcef05d903d86cf777f78bd783cf4db3ca6421f3e8f63d9094",
+      "payoutTx": "0xd7bc2e80377b7aff760d3bfa16ec0bd124d11977407353aad347f610441f3efa"
+    },
+    {
+      "at": "2026-10-25T08:53:44.169Z",
+      "kind": "pay",
+      "seller": "pricing-data",
+      "priceRlusd": "0.02",
+      "tx": "0x0780a516a825e5587dbc13bfba8695bb1cf6d64ce93ff3c4dbeeef5d8c0af130",
+      "claimId": "0x4845b291873699d2f603d378ef0573ec3d3069636ab71bf2c7c05bfc1473d763"
+    },
+    {
+      "at": "2026-10-25T08:54:16.395Z",
+      "kind": "settle",
+      "seller": "pricing-data",
+      "settlementTx": "0x25683dcaa1406056f4405582f0b6ca8b8f9019a958e09a777676bf298c1725bb",
+      "payoutTx": "0xc57e6894c47a1323c4e6d49e8255837e98d4bacc9a53c42a4bc084ce16b02378"
+    },
+    {
+      "at": "2026-10-25T08:54:17.070Z",
+      "kind": "refuse",
+      "seller": "competition-data",
+      "guard": "MissionBudgetGuard",
+      "reason": "0.04 spent + 0.02 exceeds mission budget 0.05",
+      "askedRlusd": "0.02",
+      "listedRlusd": "0.02"
+    },
+    {
+      "at": "2026-10-25T08:54:17.208Z",
+      "kind": "payout-check",
+      "beforeRlusd": "11.310426",
+      "afterRlusd": "11.350426",
+      "spentRlusd": "0.04",
+      "matches": true
+    }
+  ],
+  "channelId": "0xba86e45959af3fb932f551c62f43542b3fd80a2f99d45ceca4386920d0363dd0",
+  "payoutBefore": "11310426000000000000",
+  "redeemedStart": "304744000000000000",
+  "settlementMode": "automatic",
+  "payoutAfter": "11350426000000000000",
+  "spent": "40000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 74
+}

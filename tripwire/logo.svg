@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="t d">
+  <title id="t">TRIPWIRE</title>
+  <desc id="d">A shield crossed by a taut wire with a break spark: guardrails that stop a payment even when the agent is fooled.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <path d="M128 12 224 48v72c0 62-40 104-96 124C72 224 32 182 32 120V48z" fill="url(#g)" stroke="#ff5e00" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M60 150h136" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 0"/>
+  <circle cx="60" cy="150" r="9" fill="#ff5e00"/>
+  <circle cx="196" cy="150" r="9" fill="#ff5e00"/>
+  <path d="M120 78 146 78 132 112 156 112 106 190 118 130 96 130z" fill="#ff5e00"/>
+</svg>

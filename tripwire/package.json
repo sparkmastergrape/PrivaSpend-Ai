@@ -1,0 +1,15 @@
+{
+  "name": "project-tripwire",
+  "version": "1.0.0",
+  "description": "TRIPWIRE: Vulnerable LLM Agent vs. Cryptographic AP4M Guardrails",
+  "main": "tripwire-engine.mjs",
+  "type": "module",
+  "scripts": {
+    "test": "node tripwire-engine.mjs && node test.mjs",
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "ethers": "^6.17.0",
+    "express": "^4.21.2"
+  }
+}

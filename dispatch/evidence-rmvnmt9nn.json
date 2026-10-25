@@ -1,0 +1,110 @@
+{
+  "runId": "rmvnmt9nn",
+  "scenario": "visibility-audit",
+  "title": "Visibility audit (buys more only if the first purchase shows weakness)",
+  "mandate": {
+    "perCallCeiling": "0.05",
+    "missionBudget": "0.08",
+    "priceTolerancePct": 25
+  },
+  "seed": 7,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "citation-snapshot",
+      "priceRlusd": "0.02",
+      "tx": "0xdf72bac02e9e6200e4cba90b251de34ea6a3645ed21ea841b931b514fa1e7f1e",
+      "claimId": "0xcffa5fdd52504dc4ecb7313fb3b853884945878bfc24a1b765087ec7594901cd",
+      "redeemedBefore": "644256000000000000",
+      "redeemedAfter": "664256000000000000",
+      "settlementTx": "0x312e9f57ce6ca9aafde7f9647a03e91cf785fe7e9ea7711b2b0b98ab8983bcb6",
+      "payoutTx": "0x92483b5e0af885bbce5aeb56a0b665d03edf661518622cd6e48cd83c479bc4a4",
+      "block": 9231877,
+      "status": 1,
+      "eventClaimId": "0xcffa5fdd52504dc4ecb7313fb3b853884945878bfc24a1b765087ec7594901cd",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    },
+    {
+      "seller": "competitor-benchmark",
+      "priceRlusd": "0.03",
+      "tx": "0x6c183e41f73ca8baef0ebbdd10f069a28f5c93457aa2fa2943065068b024dec9",
+      "claimId": "0x0d2458ea9a2b18c1b56787eaa05bc5c788341313837d2bc4f198915b05a4237c",
+      "redeemedBefore": "664256000000000000",
+      "redeemedAfter": "694256000000000000",
+      "settlementTx": "0x72d2852190736f296e86cd41c809e6ead73ce4a995a962f3487879ddce6c21d7",
+      "payoutTx": "0x405a0bd7892ac790b45ca4f26f605f727ca649386b3e8d92d18d8acccb8ad293",
+      "block": 9231883,
+      "status": 1,
+      "eventClaimId": "0x0d2458ea9a2b18c1b56787eaa05bc5c788341313837d2bc4f198915b05a4237c",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.03"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "premium-forecast",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.04 RLUSD but was listed at 0.02 (tolerance 25%)",
+      "askedRlusd": "0.04"
+    }
+  ],
+  "timeline": [
+    {
+      "at": "2026-10-25T09:35:14.014Z",
+      "kind": "pay",
+      "seller": "citation-snapshot",
+      "priceRlusd": "0.02",
+      "tx": "0xdf72bac02e9e6200e4cba90b251de34ea6a3645ed21ea841b931b514fa1e7f1e",
+      "claimId": "0xcffa5fdd52504dc4ecb7313fb3b853884945878bfc24a1b765087ec7594901cd"
+    },
+    {
+      "at": "2026-10-25T09:35:41.645Z",
+      "kind": "settle",
+      "seller": "citation-snapshot",
+      "settlementTx": "0x312e9f57ce6ca9aafde7f9647a03e91cf785fe7e9ea7711b2b0b98ab8983bcb6",
+      "payoutTx": "0x92483b5e0af885bbce5aeb56a0b665d03edf661518622cd6e48cd83c479bc4a4"
+    },
+    {
+      "at": "2026-10-25T09:35:46.513Z",
+      "kind": "pay",
+      "seller": "competitor-benchmark",
+      "priceRlusd": "0.03",
+      "tx": "0x6c183e41f73ca8baef0ebbdd10f069a28f5c93457aa2fa2943065068b024dec9",
+      "claimId": "0x0d2458ea9a2b18c1b56787eaa05bc5c788341313837d2bc4f198915b05a4237c"
+    },
+    {
+      "at": "2026-10-25T09:36:13.397Z",
+      "kind": "settle",
+      "seller": "competitor-benchmark",
+      "settlementTx": "0x72d2852190736f296e86cd41c809e6ead73ce4a995a962f3487879ddce6c21d7",
+      "payoutTx": "0x405a0bd7892ac790b45ca4f26f605f727ca649386b3e8d92d18d8acccb8ad293"
+    },
+    {
+      "at": "2026-10-25T09:36:14.001Z",
+      "kind": "refuse",
+      "seller": "premium-forecast",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.04 RLUSD but was listed at 0.02 (tolerance 25%)",
+      "askedRlusd": "0.04",
+      "listedRlusd": "0.02"
+    },
+    {
+      "at": "2026-10-25T09:36:14.171Z",
+      "kind": "payout-check",
+      "beforeRlusd": "11.649938",
+      "afterRlusd": "11.699938",
+      "spentRlusd": "0.05",
+      "matches": true
+    }
+  ],
+  "channelId": "0xba86e45959af3fb932f551c62f43542b3fd80a2f99d45ceca4386920d0363dd0",
+  "payoutBefore": "11649938000000000000",
+  "redeemedStart": "644256000000000000",
+  "settlementMode": "automatic",
+  "payoutAfter": "11699938000000000000",
+  "spent": "50000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 71
+}

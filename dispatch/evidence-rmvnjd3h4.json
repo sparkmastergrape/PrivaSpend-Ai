@@ -1,0 +1,57 @@
+{
+  "runId": "rmvnjd3h4",
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "citation-snapshot",
+      "priceRlusd": "0.02",
+      "tx": "0x2d6448f8933c1c8ec266dfc1817f3c3b61e60b3be0ee46105975a5fd7d97abe6",
+      "claimId": "0x3bb27a35a183cf593c7b20a66270f67cc8a65e856d598b77d50a51fb5c9dd1c7",
+      "redeemedBefore": "905682000000000000",
+      "redeemedAfter": "925682000000000000",
+      "settlementTx": "0x50e8e4fbc43a04005cf7efc270cfc0367a444f5108ab9f66e4822e8e6b1c66df",
+      "payoutTx": "0x0fbd284f3d6f4fed29625331fb21adc36aacd6b659e5eb0fed128cccc446cc69",
+      "block": 9230876,
+      "status": 1,
+      "eventClaimId": "0x3bb27a35a183cf593c7b20a66270f67cc8a65e856d598b77d50a51fb5c9dd1c7",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    },
+    {
+      "seller": "competitor-benchmark",
+      "priceRlusd": "0.03",
+      "tx": "0x26d131f8dc43bc2ad65778af0a7c3292ef95b34c63e1d34c8130478372820fdd",
+      "claimId": "0x9d6340b96cf12d9651b643ddd424e3e3e6fe3240a6168bad5b8a5d1381e52ef6",
+      "redeemedBefore": "925682000000000000",
+      "redeemedAfter": "955682000000000000",
+      "settlementTx": "0x0597be52bd47d9faa8672d8b0a7b1001afb5eb21a8b7ae4f9d8935a07ffcbec0",
+      "payoutTx": "0x80ca236aff5bc84fcac47ec391a0de948cf10464a87897a555e47941708a4f57",
+      "block": 9230880,
+      "status": 1,
+      "eventClaimId": "0x9d6340b96cf12d9651b643ddd424e3e3e6fe3240a6168bad5b8a5d1381e52ef6",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.03"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "premium-forecast",
+      "guard": "Unavailable",
+      "reason": "merchant unavailable (503)"
+    }
+  ],
+  "channelId": "0x6d824358aa10ae33fb4ccf7deaab5e54147d4682963faeb4334518f2e26f320b",
+  "payoutBefore": "935682000000000000",
+  "redeemedStart": "905682000000000000",
+  "settlement": {
+    "settlementTx": "0x0597be52bd47d9faa8672d8b0a7b1001afb5eb21a8b7ae4f9d8935a07ffcbec0",
+    "payoutTx": "0x80ca236aff5bc84fcac47ec391a0de948cf10464a87897a555e47941708a4f57",
+    "claimsSettled": 31,
+    "amountRlusd": "0.03"
+  },
+  "payoutAfter": "985682000000000000",
+  "spent": "50000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 72
+}

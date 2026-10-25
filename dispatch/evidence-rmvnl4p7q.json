@@ -1,0 +1,104 @@
+{
+  "runId": "rmvnl4p7q",
+  "scenario": "comparison-shopper",
+  "title": "Comparison shopper (peeks at every price for free, buys the best acceptable one)",
+  "mandate": {
+    "perCallCeiling": "0.05",
+    "missionBudget": "0.05",
+    "priceTolerancePct": 25
+  },
+  "seed": 99,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "quote-vendor-c",
+      "priceRlusd": "0.02",
+      "tx": "0xb17fd2869e1843b63eb7ad0182f46ad4cf3c9d3baba4defbc1ee3ff6bbee6399",
+      "claimId": "0xe8fd0f6f83c668853cd9ce951b493a91ee0af218292a5da468e0b27f196b76c4",
+      "redeemedBefore": "264744000000000000",
+      "redeemedAfter": "284744000000000000",
+      "settlementTx": "0xf408595533e14b5a7190490ef3ee9d2ad6b659b8086a3f50c3b0dfa87e7dc249",
+      "payoutTx": "0x653061fd8e4c25b5e5ba068038f6b7c8faf3ec6f36d23c8de183e22933bce8f7",
+      "block": 9231389,
+      "status": 1,
+      "eventClaimId": "0xe8fd0f6f83c668853cd9ce951b493a91ee0af218292a5da468e0b27f196b76c4",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "quote-vendor-b",
+      "stage": "peek",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.04 RLUSD but was listed at 0.03 (tolerance 25%)",
+      "askedRlusd": "0.04"
+    }
+  ],
+  "timeline": [
+    {
+      "at": "2026-10-25T08:47:57.920Z",
+      "kind": "peek",
+      "seller": "quote-vendor-a",
+      "askedRlusd": "0.01",
+      "listedRlusd": "0.01",
+      "wouldPay": true,
+      "guard": null
+    },
+    {
+      "at": "2026-10-25T08:47:59.495Z",
+      "kind": "peek",
+      "seller": "quote-vendor-b",
+      "askedRlusd": "0.04",
+      "listedRlusd": "0.03",
+      "wouldPay": false,
+      "guard": "PriceChangeGuard"
+    },
+    {
+      "at": "2026-10-25T08:48:00.619Z",
+      "kind": "peek",
+      "seller": "quote-vendor-c",
+      "askedRlusd": "0.02",
+      "listedRlusd": "0.02",
+      "wouldPay": true,
+      "guard": null
+    },
+    {
+      "at": "2026-10-25T08:48:06.738Z",
+      "kind": "pay",
+      "seller": "quote-vendor-c",
+      "priceRlusd": "0.02",
+      "tx": "0xb17fd2869e1843b63eb7ad0182f46ad4cf3c9d3baba4defbc1ee3ff6bbee6399",
+      "claimId": "0xe8fd0f6f83c668853cd9ce951b493a91ee0af218292a5da468e0b27f196b76c4"
+    },
+    {
+      "at": "2026-10-25T08:50:25.685Z",
+      "kind": "settle",
+      "seller": "quote-vendor-c",
+      "settlementTx": "0xf408595533e14b5a7190490ef3ee9d2ad6b659b8086a3f50c3b0dfa87e7dc249",
+      "payoutTx": "0x653061fd8e4c25b5e5ba068038f6b7c8faf3ec6f36d23c8de183e22933bce8f7"
+    },
+    {
+      "at": "2026-10-25T08:50:25.932Z",
+      "kind": "payout-check",
+      "beforeRlusd": "11.270426",
+      "afterRlusd": "11.290426",
+      "spentRlusd": "0.02",
+      "matches": true
+    }
+  ],
+  "channelId": "0xba86e45959af3fb932f551c62f43542b3fd80a2f99d45ceca4386920d0363dd0",
+  "payoutBefore": "11270426000000000000",
+  "redeemedStart": "264744000000000000",
+  "settlement": {
+    "settlementTx": "0xf408595533e14b5a7190490ef3ee9d2ad6b659b8086a3f50c3b0dfa87e7dc249",
+    "payoutTx": "0x653061fd8e4c25b5e5ba068038f6b7c8faf3ec6f36d23c8de183e22933bce8f7",
+    "claimsSettled": 9,
+    "amountRlusd": "0.02"
+  },
+  "payoutAfter": "11290426000000000000",
+  "spent": "20000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 150
+}

@@ -1,0 +1,41 @@
+{
+  "runId": "rmvnjbzqp",
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "citation-snapshot",
+      "priceRlusd": "0.02",
+      "tx": "0xfdfe7e5fd59c68bdf42d5c27b8935d59680fe94a9bd0ef61ad2ca195ac8fae1a",
+      "claimId": "0x265be473aacdeee7ab09694d0f4bdb36b9962be13866cfade34a339be3816983",
+      "redeemedBefore": "885682000000000000",
+      "redeemedAfter": "905682000000000000",
+      "block": 9230867,
+      "status": 1,
+      "eventClaimId": "0x265be473aacdeee7ab09694d0f4bdb36b9962be13866cfade34a339be3816983",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "premium-forecast",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.06 RLUSD but was listed at 0.02 (tolerance 25%)",
+      "askedRlusd": "0.06"
+    }
+  ],
+  "channelId": "0x6d824358aa10ae33fb4ccf7deaab5e54147d4682963faeb4334518f2e26f320b",
+  "payoutBefore": "915682000000000000",
+  "redeemedStart": "885682000000000000",
+  "settlement": {
+    "settlementTx": "0x07d229edb11b921730a56ad675a59b6d448988ca47fd123642aba19f29e5987b",
+    "payoutTx": "0x3c59955bc381d98498752a5f1701ef9e2746e8d630073970e524d87733c96595",
+    "claimsSettled": 29,
+    "amountRlusd": "0.02"
+  },
+  "payoutAfter": "935682000000000000",
+  "spent": "20000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 27
+}

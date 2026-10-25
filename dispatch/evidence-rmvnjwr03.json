@@ -1,0 +1,60 @@
+{
+  "runId": "rmvnjwr03",
+  "scenario": "visibility-audit",
+  "seed": 3429393645,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "citation-snapshot",
+      "priceRlusd": "0.02",
+      "tx": "0x8aff7049b3578be140f1e97c5f388d6628be346443eefb6049f5dbc4df06efa2",
+      "claimId": "0x761ef41ba9c579dee2f6c4cff3b2e0bda7c2a26a4690f164bb21dd0a4324d593",
+      "redeemedBefore": "30000000000000000",
+      "redeemedAfter": "50000000000000000",
+      "settlementTx": "0xacca5555aa2a3ef2e54aaa8cb5f9ef8d1f662af71a75174d15462136b78764e4",
+      "payoutTx": "0x80f388d5d79d59891e0f640099d017fe4bae54666a3dbd39513e673f3490fe25",
+      "block": 9231035,
+      "status": 1,
+      "eventClaimId": "0x761ef41ba9c579dee2f6c4cff3b2e0bda7c2a26a4690f164bb21dd0a4324d593",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    },
+    {
+      "seller": "competitor-benchmark",
+      "priceRlusd": "0.03",
+      "tx": "0xea8e9a5f4a0da70e42b1efdf1fc23708a0626ee96ff0c8c526ca1de3cb54d23b",
+      "claimId": "0xc255cdbe0ab38c96bf1cc40cd52191eafd12ec4814bc143c268493f98d2ef049",
+      "redeemedBefore": "50000000000000000",
+      "redeemedAfter": "80000000000000000",
+      "settlementTx": "0x9435753ae8f8ff734badd508d5d5472598a88dc15910966592b992d92a3847ae",
+      "payoutTx": "0xa9164cf21855b2565cc1c2fdab712613715d833b8f0dcc6725de6258dd655eb2",
+      "block": 9231040,
+      "status": 1,
+      "eventClaimId": "0xc255cdbe0ab38c96bf1cc40cd52191eafd12ec4814bc143c268493f98d2ef049",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.03"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "premium-forecast",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.04 RLUSD but was listed at 0.02 (tolerance 25%)",
+      "askedRlusd": "0.04"
+    }
+  ],
+  "channelId": "0xba86e45959af3fb932f551c62f43542b3fd80a2f99d45ceca4386920d0363dd0",
+  "payoutBefore": "1035682000000000000",
+  "redeemedStart": "30000000000000000",
+  "settlement": {
+    "settlementTx": "0x9435753ae8f8ff734badd508d5d5472598a88dc15910966592b992d92a3847ae",
+    "payoutTx": "0xa9164cf21855b2565cc1c2fdab712613715d833b8f0dcc6725de6258dd655eb2",
+    "claimsSettled": 3,
+    "amountRlusd": "0.03"
+  },
+  "payoutAfter": "1085682000000000000",
+  "spent": "50000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 65
+}

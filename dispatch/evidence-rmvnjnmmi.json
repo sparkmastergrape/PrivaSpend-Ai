@@ -1,0 +1,50 @@
+{
+  "runId": "rmvnjnmmi",
+  "scenario": "failover",
+  "seed": 4182471775,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "backup-leads-2",
+      "priceRlusd": "0.03",
+      "tx": "0x820dbe14ade2e72b8d214d125dc0cb7807f69904c4e796f0655643121578cb15",
+      "claimId": "0x9183dbfccafe547e0b1321fb6fddba800d1ccd055e53a4482dc6dc71dfb0f57c",
+      "redeemedBefore": "0",
+      "redeemedAfter": "30000000000000000",
+      "settlementTx": "0x92219d6a0cafa5f5bddac2908526f1964124d035883f8e009b74561be54856c1",
+      "payoutTx": "0xa5017a9818fa785e68f1331ed41b3ac870acdbea2b934844225c443cd6d28b99",
+      "block": 9230961,
+      "status": 1,
+      "eventClaimId": "0x9183dbfccafe547e0b1321fb6fddba800d1ccd055e53a4482dc6dc71dfb0f57c",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.03"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "primary-leads",
+      "guard": "Unavailable",
+      "reason": "offline"
+    },
+    {
+      "seller": "backup-leads-1",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.05 RLUSD but was listed at 0.03 (tolerance 25%)",
+      "askedRlusd": "0.05"
+    }
+  ],
+  "channelId": "0xba86e45959af3fb932f551c62f43542b3fd80a2f99d45ceca4386920d0363dd0",
+  "payoutBefore": "1005682000000000000",
+  "redeemedStart": "0",
+  "settlement": {
+    "settlementTx": "0x92219d6a0cafa5f5bddac2908526f1964124d035883f8e009b74561be54856c1",
+    "payoutTx": "0xa5017a9818fa785e68f1331ed41b3ac870acdbea2b934844225c443cd6d28b99",
+    "claimsSettled": 1,
+    "amountRlusd": "0.03"
+  },
+  "payoutAfter": "1035682000000000000",
+  "spent": "30000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 32
+}

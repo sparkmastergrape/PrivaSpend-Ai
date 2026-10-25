@@ -1,0 +1,77 @@
+{
+  "runId": "rmvnspwts",
+  "scenario": "live-weather",
+  "title": "Live weather (real data: pays for a current reading, then decides whether a crew should work)",
+  "mandate": {
+    "perCallCeiling": "0.05",
+    "missionBudget": "0.05",
+    "priceTolerancePct": 25
+  },
+  "seed": 601248561,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "weather-feed-b",
+      "priceRlusd": "0.02",
+      "tx": "0x8db58d105a74c6dfc4627389f5e298e6975f259a8cbbca62b5dec31ea4714360",
+      "claimId": "0x3e1d4bfb90ade9eb4ee2b4203ef18c5d183134d385f44dbe38db5553e8f7b603",
+      "redeemedBefore": "933744000000000000",
+      "redeemedAfter": "953744000000000000",
+      "block": 9233591,
+      "status": 1,
+      "eventClaimId": "0x3e1d4bfb90ade9eb4ee2b4203ef18c5d183134d385f44dbe38db5553e8f7b603",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "weather-feed-a",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.04 RLUSD but was listed at 0.02 (tolerance 25%)",
+      "askedRlusd": "0.04"
+    }
+  ],
+  "timeline": [
+    {
+      "at": "2026-10-25T12:20:24.031Z",
+      "kind": "refuse",
+      "seller": "weather-feed-a",
+      "guard": "PriceChangeGuard",
+      "reason": "asks 0.04 RLUSD but was listed at 0.02 (tolerance 25%)",
+      "askedRlusd": "0.04",
+      "listedRlusd": "0.02"
+    },
+    {
+      "at": "2026-10-25T12:20:30.551Z",
+      "kind": "pay",
+      "seller": "weather-feed-b",
+      "priceRlusd": "0.02",
+      "tx": "0x8db58d105a74c6dfc4627389f5e298e6975f259a8cbbca62b5dec31ea4714360",
+      "claimId": "0x3e1d4bfb90ade9eb4ee2b4203ef18c5d183134d385f44dbe38db5553e8f7b603"
+    },
+    {
+      "at": "2026-10-25T12:20:49.082Z",
+      "kind": "settle",
+      "seller": "weather-feed-b",
+      "via": "payout balance"
+    },
+    {
+      "at": "2026-10-25T12:20:49.083Z",
+      "kind": "payout-check",
+      "beforeRlusd": "11.939426",
+      "afterRlusd": "11.959426",
+      "spentRlusd": "0.02",
+      "matches": true
+    }
+  ],
+  "channelId": "0xba86e45959af3fb932f551c62f43542b3fd80a2f99d45ceca4386920d0363dd0",
+  "payoutBefore": "11939426000000000000",
+  "redeemedStart": "933744000000000000",
+  "settlementMode": "automatic",
+  "payoutAfter": "11959426000000000000",
+  "spent": "20000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 26
+}

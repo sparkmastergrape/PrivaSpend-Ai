@@ -1,0 +1,38 @@
+{
+  "runId": "rmvnjkwvv",
+  "scenario": "comparison-shopper",
+  "seed": 7,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "quote-vendor-a",
+      "priceRlusd": "0.02",
+      "tx": "0x56234843d7d992c51980a3e7019fd534ec20a10f732888917d8d9ccc8ba7e2c1",
+      "claimId": "0xd487e8b871d1f7f69559824734d0b27d49640e6d5044af56d5905558727108a3",
+      "redeemedBefore": "955682000000000000",
+      "redeemedAfter": "975682000000000000",
+      "settlementTx": "0x26fcff82594b4bf0c625c1458d1ebc8dbaed9ee7816b0753ab6b686c1d2a9892",
+      "payoutTx": "0x941f3397898754f9c9ca2d936646ac855f30e5af5d2048d7c506435d0d3acbb7",
+      "block": 9230939,
+      "status": 1,
+      "eventClaimId": "0xd487e8b871d1f7f69559824734d0b27d49640e6d5044af56d5905558727108a3",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    }
+  ],
+  "refusals": [],
+  "channelId": "0x6d824358aa10ae33fb4ccf7deaab5e54147d4682963faeb4334518f2e26f320b",
+  "payoutBefore": "985682000000000000",
+  "redeemedStart": "955682000000000000",
+  "settlement": {
+    "settlementTx": "0x26fcff82594b4bf0c625c1458d1ebc8dbaed9ee7816b0753ab6b686c1d2a9892",
+    "payoutTx": "0x941f3397898754f9c9ca2d936646ac855f30e5af5d2048d7c506435d0d3acbb7",
+    "claimsSettled": 32,
+    "amountRlusd": "0.02"
+  },
+  "payoutAfter": "1005682000000000000",
+  "spent": "20000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 25
+}

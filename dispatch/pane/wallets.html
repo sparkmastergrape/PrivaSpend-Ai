@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispatch Live Wallets</title>
+<style>
+  :root {
+    --ground: #070A09; --panel: #0C110F; --line: #18211D; --edge: #22302A;
+    --green: #4FE39B; --amber: #F2B84B; --red: #F0707A; --blue: #6FB7FF;
+    --text: #E7EFEA; --text-2: #BCC9C2; --muted: #8CA096; --faint: #7B8F85;
+    --mono: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--text); font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; }
+  a { color: var(--green); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px max(16px, env(safe-area-inset-left, 0px)) 56px; }
+  .top { display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+  h1 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -.01em; }
+  .meta { font-family: var(--mono); font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .badge { padding: 3px 9px; border-radius: 4px; border: 1px solid var(--edge); color: var(--text-2); }
+  .badge.qn { color: var(--green); border-color: #1d4733; }
+  .badge.pub { color: var(--amber); border-color: #4a3b17; }
+  .warn { font-size: 12px; color: var(--amber); margin: 6px 0 0; min-height: 18px; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) 90px minmax(0, 1fr); gap: 14px; align-items: stretch; margin-top: 18px; }
+  .card { background: var(--panel); border: 1px solid var(--edge); border-radius: 8px; padding: 22px; display: flex; flex-direction: column; gap: 4px; }
+  .role { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .addr { font-family: var(--mono); font-size: 12px; color: var(--faint); word-break: break-all; }
+  .lbl { font-size: 12px; color: var(--muted); margin-top: 14px; }
+  .big { font-family: var(--mono); font-size: 38px; font-weight: 500; letter-spacing: -.01em; transition: color .6s; }
+  .big.up { color: var(--green); } .big.down { color: var(--blue); }
+  .delta { font-family: var(--mono); font-size: 14px; min-height: 20px; color: var(--muted); }
+  .delta.up { color: var(--green); } .delta.down { color: var(--blue); }
+  .small { font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+  .mid { display: flex; align-items: center; justify-content: center; position: relative; }
+  .arrow { width: 100%; height: 2px; background: var(--line); position: relative; }
+  .arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border-left: 8px solid var(--line); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .pulse { position: absolute; left: 0; top: -5px; width: 12px; height: 12px; border-radius: 50%; background: var(--green); opacity: 0; }
+  .pulse.go { animation: slide 1.4s ease-in-out; }
+  @keyframes slide { 0% { left: 0; opacity: 1; } 90% { opacity: 1; } 100% { left: calc(100% - 12px); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .pulse.go { animation: none; } .big { transition: none; } }
+  .log { margin-top: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; font-family: var(--mono); font-size: 12px; min-height: 90px; }
+  .log div { padding: 3px 0; color: var(--text-2); } .log .t { color: var(--faint); margin-right: 10px; }
+  .note { font-size: 12px; line-height: 1.7; color: var(--faint); margin-top: 16px; max-width: 80ch; }
+  button { font: inherit; font-size: 13px; color: #04120B; background: var(--green); border: 0; border-radius: 5px; padding: 8px 14px; cursor: pointer; font-weight: 600; }
+  .sec { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 26px 0 6px; }
+  .ag { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+  .ag.run { border-color: var(--green); }
+  .ag .h { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 13px; color: var(--text); }
+  .ag .h b { font-weight: 600; }
+  .ag .h .t { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .pill { font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--edge); color: var(--muted); }
+  .pill.running { color: var(--green); border-color: var(--green); }
+  .pill.running::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: blink 1s infinite; }
+  .pill.failed, .pill.stopped { color: var(--red); border-color: var(--red); }
+  .pill.not-started { color: var(--amber); border-color: var(--amber); }
+  .ag pre { margin: 8px 0 0; padding: 8px 10px; background: var(--ground); border-radius: 6px; font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--text-2); white-space: pre-wrap; word-break: break-word; max-height: 190px; overflow: auto; }
+  @keyframes blink { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .pill.running::before { animation: none; } }
+  #red th { text-align: left; padding: 9px 12px; font-size: 11px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  #red td { padding: 9px 12px; font-family: var(--mono); font-size: 12px; color: var(--text-2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  #red tr.unrec td { color: var(--amber); }
+  @media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } .mid { height: 28px; } .arrow { width: 2px; height: 100%; } .arrow::after { display: none; } .pulse { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>Live wallets</h1>
+    <div class="meta">
+      <span class="badge" id="prov">connecting…</span>
+      <span class="badge pub" id="liveMode">polling</span>
+      <span id="blk">block —</span>
+      <span id="lat">— ms</span>
+      <a href="/">Runs</a>
+    </div>
+  </div>
+  <p class="warn" id="warn"></p>
+
+  <div class="grid">
+    <section class="card" aria-label="Agent wallet">
+      <div class="role">Agent (buyer)</div>
+      <div class="addr" id="a-addr"></div>
+      <div class="lbl">Channel balance left (RLUSD)</div>
+      <div class="big" id="a-chan">—</div>
+      <div class="delta" id="a-chan-d"></div>
+      <div class="lbl">Wallet RLUSD</div>
+      <div class="small" id="a-rl">—</div>
+    </section>
+    <div class="mid" aria-hidden="true"><div class="arrow"><span class="pulse" id="pulse"></span></div></div>
+    <section class="card" aria-label="Merchant wallet">
+      <div class="role">Merchant (seller payout)</div>
+      <div class="addr" id="m-addr"></div>
+      <div class="lbl">Wallet RLUSD</div>
+      <div class="big" id="m-rl">—</div>
+      <div class="delta" id="m-rl-d"></div>
+      <div class="lbl">Gas balance (XRP)</div>
+      <div class="small" id="m-nat">—</div>
+    </section>
+  </div>
+
+  <h2 class="sec">Agents</h2>
+  <p class="note" id="agSum" style="margin:0 0 8px">Looking for running agents…</p>
+  <div id="agents"></div>
+
+  <div style="display:flex;gap:10px;align-items:center;margin-top:16px">
+    <button id="rebase">Reset baseline</button>
+    <span class="note" style="margin:0">Changes are measured from the first reading after you load or reset.</span>
+  </div>
+  <div class="log" id="log" aria-live="polite"></div>
+  <h2 style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:26px 0 6px">Redemptions on this channel</h2>
+  <p class="warn" id="redWarn" style="color:var(--red)"></p>
+  <p class="note" id="redSum" style="margin:0 0 8px"></p>
+  <div style="overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)">
+    <table id="red" style="border-collapse:collapse;width:100%;min-width:640px">
+      <thead><tr><th>Time</th><th>Block</th><th>Bought from</th><th>Amount</th><th>Voucher total</th><th>Claim</th><th>Saved run?</th><th>Redeem tx</th></tr></thead>
+      <tbody id="redBody"></tbody>
+    </table>
+  </div>
+  <p class="note">
+    These numbers are read from the chain by this page's server, not reported by the agent. The agent pays out of RLUSD it
+    has escrowed in a payment channel, so its own wallet balance stays flat while the channel balance falls. The merchant
+    balance rises only once the payment settles, which can take several seconds after the voucher is redeemed. The merchant
+    wallet is shared by every seller on this team, so a rise that no run explains is worth checking before you present.
+  </p>
+</div>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var base = null, last = null, busy = false;
+  var N = function (s) { return Number(s); };
+  var f6 = function (n) { return n.toFixed(6); };
+  var short = function (a) { return a.slice(0, 8) + '…' + a.slice(-6); };
+  function log(msg) {
+    var row = document.createElement('div'), t = document.createElement('span');
+    t.className = 't'; t.textContent = new Date().toLocaleTimeString();
+    row.appendChild(t); row.appendChild(document.createTextNode(msg));
+    var box = $('log'); box.insertBefore(row, box.firstChild);
+    while (box.children.length > 12) box.removeChild(box.lastChild);
+  }
+  function show(el, delEl, cur, ref, prev) {
+    el.textContent = f6(cur);
+    var d = cur - ref;
+    delEl.textContent = Math.abs(d) < 5e-7 ? 'no change' : (d > 0 ? '+' : '') + f6(d) + ' since baseline';
+    delEl.className = 'delta ' + (Math.abs(d) < 5e-7 ? '' : d > 0 ? 'up' : 'down');
+    if (prev !== null && Math.abs(cur - prev) >= 5e-7) {
+      el.className = 'big ' + (cur > prev ? 'up' : 'down');
+      setTimeout(function () { el.className = 'big'; }, 1800);
+    }
+  }
+  function render(w) {
+    var prov = $('prov');
+    prov.textContent = w.provider.label;
+    prov.className = 'badge ' + (w.provider.label === 'QuickNode' ? 'qn' : 'pub');
+    $('warn').textContent = w.provider.note || '';
+    if (!w.ok) { $('lat').textContent = 'read failed'; $('warn').textContent = (w.provider.note ? w.provider.note + ' | ' : '') + 'Read failed: ' + w.error; return; }
+    $('blk').textContent = 'block ' + w.chain.block;
+    $('lat').textContent = w.latencyMs + ' ms';
+    $('a-addr').textContent = w.agent.address; $('m-addr').textContent = w.merchant.address;
+    var cur = {
+      chan: w.channel ? N(w.channel.remaining) : null,
+      aRl: N(w.agent.rlusd), mRl: N(w.merchant.rlusd), mNat: N(w.merchant.native),
+    };
+    if (!base) base = cur;
+    if (cur.chan !== null) show($('a-chan'), $('a-chan-d'), cur.chan, base.chan, last && last.chan);
+    else { $('a-chan').textContent = 'n/a'; $('a-chan-d').textContent = 'no channel found in saved runs'; }
+    $('a-rl').textContent = f6(cur.aRl);
+    show($('m-rl'), $('m-rl-d'), cur.mRl, base.mRl, last && last.mRl);
+    $('m-nat').textContent = f6(cur.mNat);
+    if (last) {
+      if (cur.chan !== null && last.chan !== null && Math.abs(cur.chan - last.chan) >= 5e-7) log('agent channel ' + (cur.chan < last.chan ? '' : '+') + f6(cur.chan - last.chan) + ' RLUSD (block ' + w.chain.block + ')');
+      if (Math.abs(cur.mRl - last.mRl) >= 5e-7) {
+        log('merchant wallet ' + (cur.mRl > last.mRl ? '+' : '') + f6(cur.mRl - last.mRl) + ' RLUSD (block ' + w.chain.block + ')');
+        var p = $('pulse'); p.classList.remove('go'); void p.offsetWidth; p.classList.add('go');
+      }
+    } else log('watching ' + short(w.agent.address) + ' and ' + short(w.merchant.address) + ' via ' + w.provider.label);
+    last = cur;
+  }
+  function tick() {
+    if (busy) return; busy = true;
+    fetch('/api/wallets', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(render)
+      .catch(function () { $('warn').textContent = 'Could not reach the Dispatch server.'; })
+      .then(function () { busy = false; });
+  }
+  $('rebase').addEventListener('click', function () { base = last; if (last) { log('baseline reset'); render_last(); } });
+  function render_last() { tick(); }
+  var seenTx = null;
+  function renderRed(r) {
+    var body = $('redBody'), sum = $('redSum');
+    if (!r.ok) { sum.textContent = 'Could not read redemptions (' + r.error + ').'; return; }
+    while (body.firstChild) body.removeChild(body.firstChild);
+    var unrec = r.rows.filter(function (x) { return !x.recorded; });
+    sum.textContent = r.rows.length + ' redemptions in the last ~' + r.lookbackBlocks + ' blocks, ' + unrec.length +
+      ' not in a saved run. Redemptions from before the first saved run, from other tools, or from a run still in progress show as not saved.';
+    var fresh = [];
+    r.rows.slice(0, 20).forEach(function (x) {
+      var tr = document.createElement('tr'); if (!x.recorded) tr.className = 'unrec';
+      var claim = x.claim ? x.claim.slice(0, 8) + '…' + x.claim.slice(-4) : '';
+      var cells = [x.at ? new Date(x.at).toLocaleTimeString() : '', String(x.block), x.seller ? x.seller + ' (' + x.run + ')' : 'not in a saved run',
+        x.amount, x.cumulative, claim, x.recorded ? 'yes' : 'no'];
+      cells.forEach(function (c) { var td = document.createElement('td'); td.textContent = c; tr.appendChild(td); });
+      var td = document.createElement('td'), a = document.createElement('a');
+      a.href = 'https://explorer.testnet.xrplevm.org/tx/' + x.tx; a.target = '_blank'; a.rel = 'noopener'; a.textContent = x.tx.slice(0, 10) + '…' + x.tx.slice(-6);
+      td.appendChild(a); tr.appendChild(td); body.appendChild(tr);
+    });
+    if (seenTx) r.rows.forEach(function (x) { if (!seenTx[x.tx] && !x.recorded && x.ageSec !== null && x.ageSec < 3600) fresh.push(x); });
+    var keep = {}; r.rows.forEach(function (x) { keep[x.tx] = 1; });
+    if (!seenTx) seenTx = keep; else { fresh.forEach(function (x) { log('NEW redemption not in a saved run: ' + x.amount + ' RLUSD (block ' + x.block + ')'); });
+      if (fresh.length) $('redWarn').textContent = 'A redemption landed that no saved run accounts for: ' + fresh.map(function (x) { return x.amount + ' RLUSD at block ' + x.block; }).join('; ') + '. Something else is spending on this channel, or a run is still in progress.';
+      seenTx = keep; }
+  }
+  function tickRed() {
+    fetch('/api/redemptions', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(renderRed).catch(function () {});
+  }
+  // Optional push channel: when the server has a WebSocket subscription it tells us the instant a voucher is
+  // redeemed, and we refresh now instead of waiting for the next 2s poll. Without it, polling carries on alone.
+  if (window.EventSource) {
+    var es = new EventSource('/api/live');
+    es.addEventListener('mode', function (e) {
+      var m = JSON.parse(e.data), b = $('liveMode');
+      b.textContent = m.mode === 'websocket' ? 'live: websocket' : 'polling';
+      b.className = 'badge ' + (m.mode === 'websocket' ? 'qn' : 'pub');
+      b.title = m.note || '';
+    });
+    es.addEventListener('redeemed', function (e) {
+      var d = JSON.parse(e.data); log('Voucher redeemed on-chain (block ' + d.block + ') - refreshing now'); tick(); tickRed();
+    });
+  }
+  var agStamp = '';
+  function renderAgents(r) {
+    var box = $('agents'), list = r.agents || [], run = list.filter(function (a) { return a.status === 'running'; }).length;
+    $('agSum').textContent = run ? run + ' agent' + (run > 1 ? 's' : '') + ' running now.' : list.length ? 'No agent is running. Most recent runs from the last 6 hours:' : 'No agent is running. Start one with: node demo.mjs';
+    var stamp = JSON.stringify(list.map(function (a) { return [a.runId, a.status, a.updatedAt, a.elapsedSec]; }));
+    if (stamp === agStamp) return; agStamp = stamp;
+    while (box.firstChild) box.removeChild(box.firstChild);
+    list.forEach(function (a) {
+      var d = document.createElement('div'); d.className = 'ag' + (a.status === 'running' ? ' run' : '');
+      var h = document.createElement('div'); h.className = 'h';
+      var b = document.createElement('b'); b.textContent = a.scenario;
+      var p = document.createElement('span'); p.className = 'pill ' + a.status; p.textContent = a.status;
+      var t = document.createElement('span'); t.className = 't';
+      t.textContent = a.runId + ' · seed ' + a.seed + ' · ' + a.elapsedSec + 's' + (a.result ? ' · ' + a.result.purchases + ' bought, ' + a.result.refusals + ' refused' : '');
+      h.appendChild(b); h.appendChild(p); h.appendChild(t); d.appendChild(h);
+      var pre = document.createElement('pre'); pre.textContent = a.lines.join('\n'); d.appendChild(pre);
+      box.appendChild(d); pre.scrollTop = pre.scrollHeight;
+    });
+  }
+  function tickAgents() {
+    fetch('/api/agents', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(renderAgents).catch(function () {});
+  }
+  tick(); setInterval(tick, 2000);
+  tickAgents(); setInterval(tickAgents, 1500);
+  tickRed(); setInterval(tickRed, 10000);
+})();
+</script>
+</body>
+</html>

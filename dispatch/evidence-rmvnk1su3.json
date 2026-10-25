@@ -1,0 +1,45 @@
+{
+  "runId": "rmvnk1su3",
+  "scenario": "premium-too-expensive",
+  "seed": 845217676,
+  "agent": "0x37F2F4166646Ea3cea94BB37BaBD88a01F52A7A2",
+  "payout": "0xff9395aa0918a789b4dc40e7cf147a73c92fcbf8",
+  "purchases": [
+    {
+      "seller": "summary-report",
+      "priceRlusd": "0.02",
+      "tx": "0x91b87da7db3f23f0edaec0484be8554c728eebbf009fd4137e34405cbc70e36a",
+      "claimId": "0x4d5a984ba6bbc3160f7465624abaca9b59d1eb6db33d8038f78055c593018848",
+      "redeemedBefore": "100000000000000000",
+      "redeemedAfter": "120000000000000000",
+      "settlementTx": "0xd338fe8becbf09a6a58275f856d9147766be87533da3257867310475e7e393df",
+      "payoutTx": "0xf4b0f6b3241c2ca3f56b661602d755d36444003762d0ef8fd02c2bd6e6b2c371",
+      "block": 9231075,
+      "status": 1,
+      "eventClaimId": "0x4d5a984ba6bbc3160f7465624abaca9b59d1eb6db33d8038f78055c593018848",
+      "eventMatchesClaim": true,
+      "deltaRlusd": "0.02"
+    }
+  ],
+  "refusals": [
+    {
+      "seller": "premium-report",
+      "guard": "MaxPerCallGuard",
+      "reason": "asks 0.09 RLUSD, per-call ceiling is 0.05",
+      "askedRlusd": "0.09"
+    }
+  ],
+  "channelId": "0xba86e45959af3fb932f551c62f43542b3fd80a2f99d45ceca4386920d0363dd0",
+  "payoutBefore": "1105682000000000000",
+  "redeemedStart": "100000000000000000",
+  "settlement": {
+    "settlementTx": "0xd338fe8becbf09a6a58275f856d9147766be87533da3257867310475e7e393df",
+    "payoutTx": "0xf4b0f6b3241c2ca3f56b661602d755d36444003762d0ef8fd02c2bd6e6b2c371",
+    "claimsSettled": 5,
+    "amountRlusd": "0.02"
+  },
+  "payoutAfter": "1125682000000000000",
+  "spent": "20000000000000000",
+  "payoutDeltaMatchesSpend": true,
+  "elapsedSeconds": 38
+}
